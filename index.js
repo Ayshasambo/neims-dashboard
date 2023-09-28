@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const { application } = require('express');
+const nodemon = require('nodemon');
 require('dotenv/config');
 
 //connect to database
