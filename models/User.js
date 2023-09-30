@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
-const userchema = new mongoose.Schema({
-    name:{
+const userSchema = new mongoose.Schema({
+    userid:{
+        type: String
+    },
+    firstname:{
         type: String
     },
     surname:{
@@ -12,7 +15,7 @@ const userchema = new mongoose.Schema({
         unique: true
     },
     password:{
-        type: Sring
+        type: String
     }
 });
 
