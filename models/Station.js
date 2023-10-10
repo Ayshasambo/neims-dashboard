@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const stationSchema = new mongoose.Schema({
+       name:{
+         type: String
+       }
+    
     
 });
 
