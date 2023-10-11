@@ -23,6 +23,7 @@ const authRoute = require('./routes/auth');
 const stationRoute = require('./routes/station');
 const roleRoute = require('./routes/role');
 const permissionRoute = require('./routes/permission');
+const itemRoute = require('./routes/item');
 
 //middlewares
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/station', stationRoute);
 app.use('/api/role', roleRoute);
 app.use('/api/permission', permissionRoute);
+app.use('/api/item', itemRoute);
 
 
 

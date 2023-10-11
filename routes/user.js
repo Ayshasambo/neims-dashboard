@@ -4,11 +4,12 @@ const User = require('../models/User.js');
 const Role = require("../models/Role.js");
 const Station = require("../models/Station.js");
 const {verifyToken} = require("../middlewares/authjwt.js");
+const checkPermissions = require("../middlewares/checkpermission");
 const bcrypt = require('bcrypt');
 
 
 // CREATE A NEW USER
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, checkPermissions('users'), async (req, res) => {
   try {
     const { fullname, surname, email, password,roleId, stationId } = req.body;
     const salt = await bcrypt.genSalt(10);
@@ -43,7 +44,7 @@ router.post('/', verifyToken, async (req, res) => {
 });
 
 //GET USER
-router.get("/:id", verifyToken, async (req, res) => {
+router.get("/:id", verifyToken, checkPermissions('users'), async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const { password, ...others } = user._doc;
@@ -54,7 +55,7 @@ router.get("/:id", verifyToken, async (req, res) => {
 });
 
 //GET ALL USERS
-router.get("/",  verifyToken, async (req, res) => {
+router.get("/", verifyToken, checkPermissions('users'), async (req, res) => {
   const query = req.query.new;
   try {
     const users = query

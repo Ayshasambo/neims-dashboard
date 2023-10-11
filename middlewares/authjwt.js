@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 function verifyToken(req, res, next) {
   const token = req.header('Authorization')?.split(' ')[1];
@@ -15,14 +16,17 @@ function verifyToken(req, res, next) {
     console.log('Received token:', token); // Log the received token
     console.log('Decoded token:', decoded); // Log the decoded token
     req.userId = decoded.userId;
+    console.log(req.userId)
     req.userRole = decoded.role;
-    req.userStation = decoded.station
-    const User = require('../models/User');
-    //Retrieve station information from the user model
-    const user = await User.findById(decoded.userId).populate('station.id');
-    req.userStation = user.station;
-    
-    console.log(req.userRole)
+
+    // try {
+    //   const user = await User.findById(decoded.userId).populate('station.id');
+    //   req.userStation = user.station;
+    // } catch (error) {
+    //   console.error(error);
+    //   return res.status(500).json({ message: 'Error fetching user information' });
+    // }
+  
     next();
   });
 }

@@ -5,7 +5,9 @@ const permissionSchema = new mongoose.Schema({
         type: String,
       },
     actions:[String]
-});
+},
+{timestamps: true}
+);
 
 
 module.exports = mongoose.model("Permission", permissionSchema);
