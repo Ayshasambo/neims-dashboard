@@ -27,15 +27,15 @@ const jwt = require('jsonwebtoken');
         }
 });
 
-router.get('/test-session', (req, res) => {
-    if (req.session.views) {
-      req.session.views++;
-      res.send(`Views: ${req.session.views}`);
-    } else {
-      req.session.views = 1;
-      res.send('Welcome to the session demo. Refresh to increment views.');
-    }
-  });
+// router.get('/test-session', (req, res) => {
+//     if (req.session.views) {
+//       req.session.views++;
+//       res.send(`Views: ${req.session.views}`);
+//     } else {
+//       req.session.views = 1;
+//       res.send('Welcome to the session demo. Refresh to increment views.');
+//     }
+//   });
   
 
 module.exports = router;
