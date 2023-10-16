@@ -44,7 +44,7 @@ router.post('/', verifyToken, checkPermissions('users'), async (req, res) => {
 });
 
 //GET USER
-router.get("/:id", verifyToken, checkPermissions('users'), async (req, res) => {
+router.get("/:id", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const { password, ...others } = user._doc;
@@ -55,7 +55,7 @@ router.get("/:id", verifyToken, checkPermissions('users'), async (req, res) => {
 });
 
 //GET all users
-router.get('/', verifyToken, checkPermissions('users'), async (req, res) => {
+router.get('/',  async (req, res) => {
   try{
      const getUsers = await User.find().sort({createdAt: -1});
       res.json(getUsers)
@@ -66,7 +66,7 @@ router.get('/', verifyToken, checkPermissions('users'), async (req, res) => {
 });
 
  //DELETE user
- router.delete('/:id', verifyToken, checkPermissions('users'), async (req, res) =>{
+ router.delete('/:id', verifyToken,  async (req, res) =>{
   try{ 
     const removeUser = await User.deleteOne({_id: req.params.id})
     res.json("User Deleted")
@@ -77,7 +77,7 @@ router.get('/', verifyToken, checkPermissions('users'), async (req, res) => {
 });
 
  //UPDATE a user
-  router.put('/:id', verifyToken, checkPermissions('users'), async (req, res) =>{
+  router.put('/:id', verifyToken,  async (req, res) =>{
     try{
       const updateUser = await User.updateOne(
         {_id: req.params.id}, 
