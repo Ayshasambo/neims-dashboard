@@ -23,7 +23,8 @@ const authRoute = require('./routes/auth');
 const stationRoute = require('./routes/station');
 const roleRoute = require('./routes/role');
 const permissionRoute = require('./routes/permission');
-const beneficiariesRoute = require('./routes/beneficiaries');
+const beneficiaryRoute = require('./routes/beneficiary');
+const categoryRoute = require('./routes/category');
 
 const itemRoute = require('./routes/item');
 const productlistRoute = require('./routes/productlist');
@@ -36,7 +37,8 @@ app.use('/api/auth', authRoute);
 app.use('/api/station', stationRoute);
 app.use('/api/role', roleRoute);
 app.use('/api/permission', permissionRoute);
-app.use('/api/beneficiaries', beneficiariesRoute);
+app.use('/api/beneficiary', beneficiaryRoute);
+app.use('/api/category', categoryRoute);
 
 app.use('/api/item', itemRoute);
 app.use('/api/productlist', productlistRoute);

@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
-     fooditems:{
+     food:[{
         type: String
-     },
-     nonfooditems:{
+     }],
+     nonfood:[{
         type: String
-     },
-     livelihood:{
-        type : string
-     }
+     }],
+     livelihood:[{
+        type : String
+     }],
+     medicaments:[{
+        type: String
+     }]
 },
 {timestamps:true}
 );
