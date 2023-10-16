@@ -54,18 +54,43 @@ router.get("/:id", verifyToken, checkPermissions('users'), async (req, res) => {
   }
 });
 
-//GET ALL USERS
-router.get("/", verifyToken, checkPermissions('users'), async (req, res) => {
-  const query = req.query.new;
-  try {
-    const users = query
-      ? await User.find().sort({ _id: -1 }).limit(5)
-      : await User.find();
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json(err);
+//GET all users
+router.get('/', verifyToken, checkPermissions('users'), async (req, res) => {
+  try{
+     const getUsers = await User.find().sort({createdAt: -1});
+      res.json(getUsers)
+  }
+  catch(err){
+    res.status(404).json({message:err});
   }
 });
+
+ //DELETE user
+ router.delete('/:id', verifyToken, checkPermissions('users'), async (req, res) =>{
+  try{ 
+    const removeUser = await User.deleteOne({_id: req.params.id})
+    res.json("User Deleted")
+  }
+  catch(err){
+      res.status(404).json('Error deleting user')
+  }
+});
+
+ //UPDATE a user
+  router.put('/:id', verifyToken, checkPermissions('users'), async (req, res) =>{
+    try{
+      const updateUser = await User.updateOne(
+        {_id: req.params.id}, 
+        {$set: req.body}
+      );
+      res.json(updateUser)
+    }
+    catch(err){
+      res.status(404).json("Error updating user")
+    }
+  });
+
+
 module.exports = router;
 
 

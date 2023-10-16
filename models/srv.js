@@ -13,7 +13,7 @@ const srvSchema = new mongoose.Schema({
     value:{
         type: String
     },
-    itemcategory:{
+    item:{
         type: String
     },
     station:{

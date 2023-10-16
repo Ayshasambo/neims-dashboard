@@ -23,7 +23,10 @@ const authRoute = require('./routes/auth');
 const stationRoute = require('./routes/station');
 const roleRoute = require('./routes/role');
 const permissionRoute = require('./routes/permission');
+const beneficiariesRoute = require('./routes/beneficiaries');
 const itemRoute = require('./routes/item');
+const productlistRoute = require('./routes/productlist');
+const bincardRoute = require('./routes/bincard');
 
 //middlewares
 app.use(express.json());
@@ -32,7 +35,11 @@ app.use('/api/auth', authRoute);
 app.use('/api/station', stationRoute);
 app.use('/api/role', roleRoute);
 app.use('/api/permission', permissionRoute);
+app.use('/api/beneficiaries', beneficiariesRoute);
 app.use('/api/item', itemRoute);
+app.use('/api/productlist', productlistRoute);
+app.use('/api/bincard', bincardRoute);
+
 
 
 
