@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
-     name:{
+    name:{
         type: String
-     },
-     type:[String]
+    },
+    total:{
+        type: Number
+    }
      
 },
 {timestamps:true}

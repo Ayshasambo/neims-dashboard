@@ -5,8 +5,8 @@ const Category = require('../models/Category');
 // CREATE a new category
 router.post('/', async (req, res) => {
     try {
-      const {name, type} = req.body;
-      const category = new Category({ name, type });
+      const {name, total} = req.body;
+      const category = new Category({ name, total });
     
       const newCategory = await category.save();
       res.status(201).json(newCategory);
@@ -40,13 +40,13 @@ router.get('/:id', async (req, res) => {
 });
 
  //UPDATE category
- router.patch('/:id', async (req, res) =>{
+ router.put('/:id', async (req, res) =>{
     try{
       const updateCategory = await Category.updateOne(
         {_id: req.params.id}, 
         {$set: req.body}
       );
-      res.json(updateCategory)
+      res.json('Category Updated')
     }
     catch(err){ 
       res.json({message:err})

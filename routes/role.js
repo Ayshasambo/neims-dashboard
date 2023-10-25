@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Role = require('../models/Role.js');
-const {verifyToken} = require("../middlewares/authjwt.js");
+//const {verifyToken} = require("../middlewares/authjwt.js");
 
 
 // POST a new role
-router.post('/', verifyToken, async (req, res) => {
-  const { name, permissions } = req.body;
-  const role = new Role({ name, permissions });
+router.post('/',  async (req, res) => {
+  const { name, description, permissions } = req.body;
+  const role = new Role({ name, description, permissions });
 
   try {
     const newRole = await role.save();
@@ -18,7 +18,7 @@ router.post('/', verifyToken, async (req, res) => {
 });
 
 // GET all roles
-router.get('/', verifyToken, async (req, res) => {
+router.get('/',  async (req, res) => {
   try {
     const roles = await Role.find().sort({createdAt: -1});
     res.json(roles);
@@ -28,7 +28,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 //GET specific role
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id',  async (req, res) => {
   try{
     const getRole = await Role.findOne({ _id: req.params.id });
     res.json(getRole)
@@ -39,7 +39,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 });
 
 //DELETE role
-router.delete('/:id', verifyToken, async (req, res) =>{
+router.delete('/:id',  async (req, res) =>{
   try{ 
     const removeRole = await Role.deleteOne({_id: req.params.id})
     res.json("Role Deleted")
@@ -50,7 +50,7 @@ router.delete('/:id', verifyToken, async (req, res) =>{
 });
 
 //UPDATE role
-router.put('/:id', verifyToken, async (req, res) =>{
+router.put('/:id',  async (req, res) =>{
   try{
     const updateRole = await Role.updateOne(
       {_id: req.params.id}, 

@@ -1,17 +1,54 @@
 const express = require('express');
 const router = express.Router();
 const Productlist = require('../models/Productlist');
+const Station = require('../models/Station');
+const Category = require('../models/Category');
 
-// CREATE A NEW PRODUCT
+//NEW POST
 router.post('/', async (req, res) => {
+  const { name, quantity, station, category, tag, storeofficer, verificationofficer } = req.body;
+  console.log('Tag:', tag);
+
   try {
-    const { itemname, quantity, date, total, reason } = req.body;
-    const product = new Productlist({ itemname, quantity, date, total, reason });
-  
-    const newProduct = await product.save();
-    res.status(201).json(newProduct);
+
+    const populatedStation = await Station.findById(station);
+    const populatedCategory = await Category.findById(category);
+
+    
+    console.log('station:',  station);
+    console.log('category:',  category);
+    if (!populatedStation || !populatedCategory) {
+      return res.status(404).json({ error: 'One or more items not found' });
+    }
+
+    const newProductlist = new Productlist({
+      name,
+      quantity,
+      station:populatedStation,
+      category:populatedCategory,
+      tag,
+      storeofficer,
+      verificationofficer
+    });
+
+    await newProductlist.save();
+    
+    // Update the category's total count
+    // populatedCategory.total += parseInt(quantity, 10); // Assuming quantity is a number
+    // await populatedCategory.save();
+
+    // Update the category's total count
+    if (tag === 'Incoming') {
+      populatedCategory.total += parseInt(quantity, 10);
+    } else if (tag === 'Outgoing') {
+      populatedCategory.total -= parseInt(quantity, 10);
+    }
+    await populatedCategory.save();
+
+    res.json(newProductlist);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -39,19 +76,19 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE A PRODUCT BY ID
-router.put('/:id', async (req, res) => {
-  try {
-    const { itemname, quantity, date, total, reason } = req.body;
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      { itemname, quantity, date, total, reason },
-      { new: true }
+router.patch('/:id', async (req, res) =>{
+  try{
+    const updateProductlist = await Productlist.updateOne(
+      {_id: req.params.id}, 
+      {$set: req.body}
     );
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.json('Product Updated')
+  }
+  catch(err){ 
+    res.json({message:err})
   }
 });
+
 
 // DELETE A PRODUCT
 router.delete('/:id', async (req, res) => {

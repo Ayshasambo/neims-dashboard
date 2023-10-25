@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Permission = require('../models/Permission');
-const {verifyToken} = require("../middlewares/authjwt.js");
+//const {verifyToken} = require("../middlewares/authjwt.js");
 
 // POST a new permission
 router.post('/', async (req, res) => {
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 });
 
 //GET all permissions
-router.get('/', verifyToken, async (req, res) => {
+router.get('/',  async (req, res) => {
   try{
      const getPermissions = await Permission.find().sort({createdAt: -1});
       res.json(getPermissions)
@@ -28,7 +28,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 //GET a permission
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id',  async (req, res) => {
   try{
     const getPermission = await Permission.findOne({ _id: req.params.id });
     res.json(getPermission)
@@ -39,7 +39,7 @@ router.get('/:id', verifyToken, async (req, res) => {
 });
 
 //DELETE permission
-router.delete('/:id', verifyToken, async (req, res) =>{
+router.delete('/:id',  async (req, res) =>{
   try{ 
     const removePermission = await Permission.deleteOne({_id: req.params.id})
     res.json("Permission Deleted")
@@ -50,7 +50,7 @@ router.delete('/:id', verifyToken, async (req, res) =>{
 });
 
 //UPDATE prmission
-router.put('/:id', verifyToken, async (req, res) =>{
+router.put('/:id',  async (req, res) =>{
   try{
     const updatePermission = await Permission.updateOne(
       {_id: req.params.id}, 

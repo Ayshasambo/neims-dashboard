@@ -9,20 +9,22 @@ const productlistSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  value: {
-    type: String,
-    required: true
-  },
-  station:[{
+  // value: {
+  //   type: String,
+  //   required: true
+  // },
+  station:{
      id: {
      type: String},
      name: {type: String}
-  }],
-  category:[{
-    id:{type:String}
-  }],
+  },
+  category:{
+    id:{type:String},
+    name: {type: String}
+  },
   tag:{
-    type: String
+    type: String,
+    required: true
   },
   storeofficer:{
     id:{type:String},

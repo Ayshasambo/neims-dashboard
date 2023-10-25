@@ -45,7 +45,7 @@ router.get('/:id', async (req, res) => {
         {_id: req.params.id}, 
         {$set: req.body}
       );
-      res.json(updateBeneficiary)
+      res.json('Beneficiary Updated')
     }
     catch(err){ 
       res.json({message:err})
