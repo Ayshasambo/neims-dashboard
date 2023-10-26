@@ -17,7 +17,6 @@ app.use(session({
     saveUninitialized: false
 }));
 
-
 const userRoute = require('./routes/user');
 const authRoute = require('./routes/auth');
 const stationRoute = require('./routes/station');
@@ -25,10 +24,7 @@ const roleRoute = require('./routes/role');
 const permissionRoute = require('./routes/permission');
 const beneficiaryRoute = require('./routes/beneficiary');
 const categoryRoute = require('./routes/category');
-
-
 const productlistRoute = require('./routes/productlist');
-
 
 //middlewares
 app.use(express.json());
@@ -39,12 +35,6 @@ app.use('/api/role', roleRoute);
 app.use('/api/permission', permissionRoute);
 app.use('/api/beneficiary', beneficiaryRoute);
 app.use('/api/category', categoryRoute);
-
-
 app.use('/api/productlist', productlistRoute);
-
-
-
-
 
 app.listen(process.env.PORT, () => console.log(`Listening on port ${process.env.PORT}...`));

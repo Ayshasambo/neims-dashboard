@@ -6,26 +6,24 @@ const Beneficiary = require('../models/Beneficiary.js');
 const Category = require('../models/Category.js');
 
 
-//NEW POST
+//CREATE a station
 router.post('/', async (req, res) => {
   const { name, type, category, change, productlist, beneficiaries } = req.body;
 
   try {
-    // const populatedProductlist = await Productlist.findById(productlist);
-    // const populatedBeneficiaries = await Beneficiary.findById(beneficiaries);
-    // const populatedCategory = await Category.findById(category);
-
+    
     const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
     const populatedBeneficiaries = await Promise.all(beneficiaries.map(id => Beneficiary.findById(id)));
     const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
+
+    // Calculate the change based on the tag property in product list
+    const change = populatedProductlist.every(product => product.tag === 'incoming') ? 'increase' : 'decrease';
 
     console.log('productlist:',  productlist)
     console.log('beneficiaries:',  beneficiaries)
     console.log('category:',  category)
     if (!populatedProductlist || !populatedBeneficiaries || !populatedCategory) {
       return res.status(404).json({ error: 'One or more items not found' });
-    // if (!populatedProductlist) {
-    //   return res.status(404).json({ error: 'Productlist not found' });
     }
 
     const newStation = new Station({
@@ -45,7 +43,7 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-//GET ALL STATIONS
+//GET all staions
 router.get('/', async (req, res) => {
     try{
      const station = await Station.find();
@@ -56,7 +54,7 @@ router.get('/', async (req, res) => {
    }
 });
 
-//GET A STATION
+//GET a station
 router.get('/:id', async (req, res) => {
     try{
       const station = await Station.findById(req.params.id);
@@ -68,7 +66,7 @@ router.get('/:id', async (req, res) => {
     }
   });
 
-  //UPDATE STATION
+  //UPDATE a station
 router.put('/:id', async (req, res) =>{
     try{
       const updateStation = await Station.updateOne(

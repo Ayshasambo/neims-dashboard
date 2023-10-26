@@ -4,17 +4,15 @@ const Productlist = require('../models/Productlist');
 const Station = require('../models/Station');
 const Category = require('../models/Category');
 
-//NEW POST
+//CREATE a new post
 router.post('/', async (req, res) => {
-  const { name, quantity, station, category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
   console.log('Tag:', tag);
 
-  try {
-
+  try { 
     const populatedStation = await Station.findById(station);
     const populatedCategory = await Category.findById(category);
 
-    
     console.log('station:',  station);
     console.log('category:',  category);
     if (!populatedStation || !populatedCategory) {
@@ -24,6 +22,7 @@ router.post('/', async (req, res) => {
     const newProductlist = new Productlist({
       name,
       quantity,
+      value,
       station:populatedStation,
       category:populatedCategory,
       tag,
@@ -33,10 +32,7 @@ router.post('/', async (req, res) => {
 
     await newProductlist.save();
     
-    // Update the category's total count
-    // populatedCategory.total += parseInt(quantity, 10); // Assuming quantity is a number
-    // await populatedCategory.save();
-
+    
     // Update the category's total count
     if (tag === 'Incoming') {
       populatedCategory.total += parseInt(quantity, 10);
@@ -45,6 +41,14 @@ router.post('/', async (req, res) => {
     }
     await populatedCategory.save();
 
+    // Update the station's change property
+    populatedStation.change = populatedCategory.total < 0 ? 'decrease' : 'increase';
+    if (req.body.tag === 'Outgoing') {
+        populatedStation.change = 'decrease';
+    }
+    console.log(`Change property updated to: ${populatedStation.change}`);
+    await populatedStation.save();
+
     res.json(newProductlist);
   } catch (error) {
     console.error(error);
@@ -52,7 +56,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET ALL PRODUCTS
+// GET all products
 router.get('/', async (req, res) => {
   try {
     const products = await Productlist.find().sort({createdAt:-1});
@@ -62,7 +66,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET A SINGLE PRODUCT
+// GET a single product
 router.get('/:id', async (req, res) => {
   try {
     const product = await Productlist.findById(req.params.id);
@@ -75,7 +79,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// UPDATE A PRODUCT BY ID
+// UPDATE a product
 router.patch('/:id', async (req, res) =>{
   try{
     const updateProductlist = await Productlist.updateOne(
@@ -90,7 +94,7 @@ router.patch('/:id', async (req, res) =>{
 });
 
 
-// DELETE A PRODUCT
+// DELETE a product
 router.delete('/:id', async (req, res) => {
   try {
     const deletedProduct = await Productlist.findByIdAndDelete(req.params.id);
