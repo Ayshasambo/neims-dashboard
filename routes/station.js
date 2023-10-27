@@ -86,6 +86,7 @@ router.get('/:id', async (req, res) => {
     const updateStation = await Station.updateOne(
       {_id: req.params.id}, 
       {$set: { productlist: updatedProductlist }}
+      { new: true }
     );
     console.log('updateStation:', updateStation);
 
