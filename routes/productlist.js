@@ -93,7 +93,7 @@ router.put('/:id', async (req, res) =>{
     res.json(updateProductlist)
   }
   catch(err){ 
-    res.json({message:'product not updated'})
+    res.json({message:'product not updated'}) 
   }
 });
 

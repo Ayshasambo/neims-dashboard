@@ -81,6 +81,11 @@ router.get('/:id', async (req, res) => {
   router.put('/:id', async (req, res) =>{
   try{
     console.log('Request Body:', req.body);
+    const stationId = req.params.id;
+    const productIds = req.body.productlist;
+    console.log('Station ID:', stationId);
+    console.log('Product IDs:', productIds);
+    
     const updatedProductlist = req.body.productlist.map(id => mongoose.Types.ObjectId(id));
     const updateStation = await Station.findByIdAndUpdate(
       {_id: req.params.id}, 
@@ -95,23 +100,6 @@ router.get('/:id', async (req, res) => {
     res.json({message:err})
   }
 });
-
-
-  //UPDATE a station
-// router.put('/:id/productlist', async (req, res) =>{
-//     try{
-//       const updateStation = await Station.updateOne(
-//         req.params.id,
-//         { productlist: req.body.productlist },
-//         { new: true }
-//       );
-//       res.json('Station Updated')
-//     }
-//     catch(err){
-//       res.json({message:err})
-//     }
-//   });
-
 
   // DELETE a station
 router.delete('/:id', async (req, res) => {
