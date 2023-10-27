@@ -1,19 +1,47 @@
 const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
+const Station = require('../models/Station');
 
 // CREATE a new category
-router.post('/', async (req, res) => {
-    try {
-      const {name, total, color} = req.body;
-      const category = new Category({ name, total, color });
+// router.post('/', async (req, res) => {
+//     try {
+//       const {name, total, color} = req.body;
+//       const category = new Category({ name, total, color });
     
-      const newCategory = await category.save();
-      res.status(201).json(newCategory);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+//       const newCategory = await category.save();
+//       res.status(201).json(newCategory);
+//     } catch (error) {
+//       res.status(400).json({ message: error.message });
+//     }
+//   });
+
+
+router.post('/', async (req, res) => {
+  const { name, total, station } = req.body;
+  try { 
+    const populatedStation = await Station.findById(station);
+
+    console.log('station:',  station);
+
+    if (!populatedStation) {
+      return res.status(404).json({ error: 'One or more items not found' });
     }
-  });
+
+    const newCategory = new Category({
+      name,
+      total,
+      station:populatedStation,
+    });
+
+    await newCategory.save();
+
+    res.json(newCategory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
   // GET all categories

@@ -38,20 +38,20 @@ router.post('/', async (req, res) => {
     
     
     // Update the category's total count
-    if (tag === 'Incoming') {
-      populatedCategory.total += parseInt(quantity, 10);
-    } else if (tag === 'Outgoing') {
-      populatedCategory.total -= parseInt(quantity, 10);
-    }
-    await populatedCategory.save();
+    // if (tag === 'Incoming') {
+    //   populatedCategory.total += parseInt(quantity, 10);
+    // } else if (tag === 'Outgoing') {
+    //   populatedCategory.total -= parseInt(quantity, 10);
+    // }
+    // await populatedCategory.save();
 
     // Update the station's change property
-    populatedStation.change = populatedCategory.total < 0 ? 'decrease' : 'increase';
-    if (req.body.tag === 'Outgoing') {
-        populatedStation.change = 'decrease';
-    }
-    console.log(`Change property updated to: ${populatedStation.change}`);
-    await populatedStation.save();
+    // populatedStation.change = populatedCategory.total < 0 ? 'decrease' : 'increase';
+    // if (req.body.tag === 'Outgoing') {
+    //     populatedStation.change = 'decrease';
+    // }
+    // console.log(`Change property updated to: ${populatedStation.change}`);
+    // await populatedStation.save();
 
     res.json(newProductlist);
   } catch (error) {
