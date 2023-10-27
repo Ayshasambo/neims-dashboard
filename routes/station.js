@@ -80,7 +80,8 @@ router.get('/:id', async (req, res) => {
   //UPDATE a station
   router.put('/:id', async (req, res) =>{
   try{
-    console.log('Request Body:', req.body);
+    console.log('Updated Product List:', updatedProductlist);
+    //console.log('Request Body:', req.body);
     const updatedProductlist = req.body.productlist.map(id => mongoose.Types.ObjectId(id));
     console.log('Updated Product List:', updatedProductlist);
     const updateStation = await Station.findByIdAndUpdate(
