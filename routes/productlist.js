@@ -7,57 +7,57 @@ const User = require('../models/User');
 
 
 // Step 1: Create the product list item
-// router.post('/', async (req, res) => {
-//   const { name, quantity, value, category, tag, storeofficer, verificationofficer } = req.body;
+router.post('/', async (req, res) => {
+  const { name, quantity, value, category, tag, storeofficer, verificationofficer } = req.body;
 
-//   try {
-//     const populatedCategory = await Category.findById(category);
-//     const populatedStoreofficer = await User.findById(storeofficer);
-//     const populatedVerificationofficer = await User.findById(verificationofficer);
+  try {
+    const populatedCategory = await Category.findById(category);
+    const populatedStoreofficer = await User.findById(storeofficer);
+    const populatedVerificationofficer = await User.findById(verificationofficer);
 
-//     console.log('category:',  category);
-//     console.log('storeofficer:',  storeofficer);
-//     if (!populatedCategory || !populatedStoreofficer) {
-//       return res.status(404).json({ error: 'One or more items not found' });
-//     }
+    console.log('category:',  category);
+    console.log('storeofficer:',  storeofficer);
+    if (!populatedCategory || !populatedStoreofficer) {
+      return res.status(404).json({ error: 'One or more items not found' });
+    }
 
-//     const newProductlist = new Productlist({
-//       name,
-//       quantity,
-//       value,
-//       category: populatedCategory,
-//       tag,
-//       storeofficer: populatedStoreofficer,
-//       verificationofficer: populatedVerificationofficer
-//     });
+    const newProductlist = new Productlist({
+      name,
+      quantity,
+      value,
+      category: populatedCategory,
+      tag,
+      storeofficer: populatedStoreofficer,
+      verificationofficer: populatedVerificationofficer
+    });
 
-//     await newProductlist.save();
+    await newProductlist.save();
 
-//     res.json(newProductlist);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    res.json(newProductlist);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-// // Step 2: Update the product list item with station ID
-// router.put('/:id', async (req, res) => {
-//   const productId = req.params.id;
-//   const stationId = req.body.station;
+// Step 2: Update the product list item with station ID
+router.put('/:id', async (req, res) => {
+  const productId = req.params.id;
+  const stationId = req.body.station;
 
-//   try {
-//     const updatedProductlist = await Productlist.findByIdAndUpdate(
-//       productId,
-//       { $set: { station: stationId } },
-//       { new: true }
-//     );
+  try {
+    const updatedProductlist = await Productlist.findByIdAndUpdate(
+      productId,
+      { $set: { station: stationId } },
+      { new: true }
+    );
 
-//     res.json(updatedProductlist);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    res.json(updatedProductlist);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 
@@ -66,59 +66,59 @@ const User = require('../models/User');
 
 
 //CREATE a new post
-router.post('/', async (req, res) => {
-  const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
-  console.log('Tag:', tag);
+// router.post('/', async (req, res) => {
+//   const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
+//   console.log('Tag:', tag);
 
-  try { 
-    const populatedStation = await Station.findById(station);
-    const populatedCategory = await Category.findById(category);
-    const populatedStoreofficer = await User.findById(storeofficer);
-    const populatedVerificationofficer = await User.findById(verificationofficer);
+//   try { 
+//     const populatedStation = await Station.findById(station);
+//     const populatedCategory = await Category.findById(category);
+//     const populatedStoreofficer = await User.findById(storeofficer);
+//     const populatedVerificationofficer = await User.findById(verificationofficer);
 
-    console.log('station:',  station);
-    console.log('category:',  category);
-    console.log('storeofficer:',  storeofficer);
-    if (!populatedStation || !populatedCategory || !populatedStoreofficer) {
-      return res.status(404).json({ error: 'One or more items not found' });
-    }
+//     console.log('station:',  station);
+//     console.log('category:',  category);
+//     console.log('storeofficer:',  storeofficer);
+//     if (!populatedStation || !populatedCategory || !populatedStoreofficer) {
+//       return res.status(404).json({ error: 'One or more items not found' });
+//     }
 
-    const newProductlist = new Productlist({
-      name,
-      quantity,
-      value,
-      station:populatedStation,
-      category:populatedCategory,
-      tag,
-      storeofficer:populatedStoreofficer,
-      verificationofficer:populatedVerificationofficer
-    });
+//     const newProductlist = new Productlist({
+//       name,
+//       quantity,
+//       value,
+//       station:populatedStation,
+//       category:populatedCategory,
+//       tag,
+//       storeofficer:populatedStoreofficer,
+//       verificationofficer:populatedVerificationofficer
+//     });
 
-    await newProductlist.save();
+//     await newProductlist.save();
     
     
-    // Update the category's total count
-    if (tag === 'Incoming') {
-      populatedCategory.total += parseInt(quantity, 10);
-    } else if (tag === 'Outgoing') {
-      populatedCategory.total -= parseInt(quantity, 10);
-    }
-    await populatedCategory.save();
+//     // Update the category's total count
+//     if (tag === 'Incoming') {
+//       populatedCategory.total += parseInt(quantity, 10);
+//     } else if (tag === 'Outgoing') {
+//       populatedCategory.total -= parseInt(quantity, 10);
+//     }
+//     await populatedCategory.save();
 
-    // Update the station's change property
-    populatedStation.change = populatedCategory.total < 0 ? 'decrease' : 'increase';
-    if (req.body.tag === 'Outgoing') {
-        populatedStation.change = 'decrease';
-    }
-    console.log(`Change property updated to: ${populatedStation.change}`);
-    await populatedStation.save();
+//     // Update the station's change property
+//     populatedStation.change = populatedCategory.total < 0 ? 'decrease' : 'increase';
+//     if (req.body.tag === 'Outgoing') {
+//         populatedStation.change = 'decrease';
+//     }
+//     console.log(`Change property updated to: ${populatedStation.change}`);
+//     await populatedStation.save();
 
-    res.json(newProductlist);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     res.json(newProductlist);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 // GET all products
 router.get('/', async (req, res) => {
