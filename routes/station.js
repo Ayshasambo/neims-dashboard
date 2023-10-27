@@ -14,7 +14,6 @@ router.post('/', async (req, res) => {
   const { name, type, total, category, change, productlist, beneficiaries } = req.body;
 
   try {
-    
     const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
     const populatedBeneficiaries = await Promise.all(beneficiaries.map(id => Beneficiary.findById(id)));
     const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
@@ -31,10 +30,24 @@ router.post('/', async (req, res) => {
     console.log('productlist:',  productlist)
     console.log('beneficiaries:',  beneficiaries)
     console.log('category:',  category)
+
+    // Calculate category totals
+    const categoryTotals = {};
+    populatedProductlist.forEach(product => {
+      const categoryId = product.category.toString(); // Convert category ID to string
+      categoryTotals[categoryId] = (categoryTotals[categoryId] || 0) + parseInt(product.quantity);
+    });
+
     if (!populatedProductlist || !populatedBeneficiaries || !populatedCategory) {
       return res.status(404).json({ error: 'One or more items not found' });
     }
-
+    
+    // Update category totals in the Category model
+    await Promise.all(Object.keys(categoryTotals).map(async categoryId => {
+      const total = categoryTotals[categoryId];
+      await Category.findByIdAndUpdate(categoryId, { $inc: { total } });
+    }));
+    
     const newStation = new Station({
       name,
       type,
