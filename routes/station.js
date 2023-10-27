@@ -23,7 +23,6 @@ router.post('/', async (req, res) => {
     const change = populatedProductlist.every(product => product.tag === 'incoming') ? 'increase' : 'decrease';
   
     // Calculate the total for the station
-    //const stationTotal = populatedCategory.reduce((acc, cat) => acc + cat.total, 0);
     const stationTotal = populatedProductlist.reduce((acc, product) => {
       return acc + parseInt(product.quantity, 10);
     }, 0);
@@ -81,7 +80,6 @@ router.get('/:id', async (req, res) => {
   //UPDATE a station
   router.put('/:id', async (req, res) =>{
   try{
-    console.log('Request Body:', req.body);
     const updatedProductlist = req.body.productlist.map(id => mongoose.Types.ObjectId(id));
 
     const updateStation = await Station.updateOne(
