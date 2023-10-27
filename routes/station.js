@@ -82,10 +82,10 @@ router.get('/:id', async (req, res) => {
   try{
     console.log('Request Body:', req.body);
     const updatedProductlist = req.body.productlist.map(id => mongoose.Types.ObjectId(id));
-
+    console.log('Updated Product List:', updatedProductlist);
     const updateStation = await Station.updateOne(
       {_id: req.params.id}, 
-      {$set: { productlist: updatedProductlist }}
+      {$set: { productlist: updatedProductlist }},
       { new: true }
     );
     console.log('updateStation:', updateStation);
