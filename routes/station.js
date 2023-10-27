@@ -8,7 +8,8 @@ const Category = require('../models/Category.js');
 
 //CREATE a station
 router.post('/', async (req, res) => {
-  const { name, type, category, change, productlist, beneficiaries } = req.body;
+  console.log('Request Body:', req.body);
+  const { name, type, total, category, change, productlist, beneficiaries } = req.body;
 
   try {
     
@@ -18,7 +19,11 @@ router.post('/', async (req, res) => {
 
     // Calculate the change based on the tag property in product list
     const change = populatedProductlist.every(product => product.tag === 'incoming') ? 'increase' : 'decrease';
+  
+    // Calculate the total for the station
+    const stationTotal = populatedCategory.reduce((acc, cat) => acc + cat.total, 0);
 
+    console.log('total:', stationTotal)
     console.log('productlist:',  productlist)
     console.log('beneficiaries:',  beneficiaries)
     console.log('category:',  category)
@@ -29,6 +34,7 @@ router.post('/', async (req, res) => {
     const newStation = new Station({
       name,
       type,
+      total: stationTotal,
       category:populatedCategory,
       change,
       productlist:populatedProductlist,
@@ -46,7 +52,7 @@ router.post('/', async (req, res) => {
 //GET all staions
 router.get('/', async (req, res) => {
     try{
-     const station = await Station.find();
+     const station = await Station.find().sort({createdAt:-1});;
       res.json(station);
    }
    catch(err){
@@ -79,6 +85,19 @@ router.put('/:id', async (req, res) =>{
       res.json({message:err})
     }
   });
+
+  // DELETE a station
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedStation = await Station.findByIdAndDelete(req.params.id);
+    if (!deletedStation) {
+      return res.status(404).json({ message: 'State not found' });
+    }
+    res.json({ message: 'State deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
   
 
  module.exports = router;

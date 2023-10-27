@@ -3,6 +3,7 @@ const router = express.Router();
 const Productlist = require('../models/Productlist');
 const Station = require('../models/Station');
 const Category = require('../models/Category');
+const User = require('../models/User');
 
 //CREATE a new post
 router.post('/', async (req, res) => {
@@ -12,10 +13,13 @@ router.post('/', async (req, res) => {
   try { 
     const populatedStation = await Station.findById(station);
     const populatedCategory = await Category.findById(category);
+    const populatedStoreofficer = await User.findById(storeofficer);
+    const populatedVerificationofficer = await User.findById(verificationofficer);
 
     console.log('station:',  station);
     console.log('category:',  category);
-    if (!populatedStation || !populatedCategory) {
+    console.log('storeofficer:',  storeofficer);
+    if (!populatedStation || !populatedCategory || !populatedStoreofficer) {
       return res.status(404).json({ error: 'One or more items not found' });
     }
 
@@ -26,8 +30,8 @@ router.post('/', async (req, res) => {
       station:populatedStation,
       category:populatedCategory,
       tag,
-      storeofficer,
-      verificationofficer
+      storeofficer:populatedStoreofficer,
+      verificationofficer:populatedVerificationofficer
     });
 
     await newProductlist.save();
@@ -80,16 +84,16 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE a product
-router.patch('/:id', async (req, res) =>{
+router.put('/:id', async (req, res) =>{
   try{
     const updateProductlist = await Productlist.updateOne(
       {_id: req.params.id}, 
       {$set: req.body}
     );
-    res.json('Product Updated')
+    res.json(updateProductlist)
   }
   catch(err){ 
-    res.json({message:err})
+    res.json({message:'product not updated'})
   }
 });
 

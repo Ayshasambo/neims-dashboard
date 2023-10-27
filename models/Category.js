@@ -6,6 +6,9 @@ const categorySchema = new mongoose.Schema({
     },
     total:{
         type: Number
+    },
+    color: {
+        type: String 
     }    
 },
 {timestamps:true}

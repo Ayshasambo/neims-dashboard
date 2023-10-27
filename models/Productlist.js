@@ -11,7 +11,6 @@ const productlistSchema = new mongoose.Schema({
   },
   value: {
     type: String,
-    required: true
   },
   station:{
      id: {

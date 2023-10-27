@@ -7,6 +7,9 @@ const stationSchema = new mongoose.Schema({
        type:{
         type: String
        },
+       total:{
+        type: Number
+       },
        category:[{
         id: {type: String},
         name:{type: String},
@@ -19,7 +22,8 @@ const stationSchema = new mongoose.Schema({
         id:{type: String},
         name: {type: String},
         quantity:{type:String},
-        value:{type:String}
+        tag:{type:String}
+        
        }],
        beneficiaries:[{
         id:{type:String},
