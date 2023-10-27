@@ -48,11 +48,17 @@ router.put('/:id', async (req, res) => {
   const stationId = req.body.station;
 
   try {
+    const station = await Station.findById(stationId);
+
+    if (!station) {
+      return res.status(404).json({ error: 'Station not found' });
+    }
+
     const updatedProductlist = await Productlist.findByIdAndUpdate(
       productId,
-      { $set: { station: stationId } },
+      { $set: { station: { _id: station._id, name: station.name } } },
       { new: true }
-    ).populate('station');;
+    );
 
     res.json(updatedProductlist);
   } catch (error) {
@@ -60,6 +66,28 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+
+
+// router.put('/:id', async (req, res) => {
+//   const productId = req.params.id;
+//   const stationId = req.body.station;
+
+//   try {
+//     const updatedProductlist = await Productlist.findByIdAndUpdate(
+//       productId,
+//       { $set: { station: stationId } },
+//       { new: true }
+//     ).populate('station');
+
+//     res.json(updatedProductlist);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 
 
