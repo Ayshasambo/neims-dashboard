@@ -4,6 +4,8 @@ const Station = require('../models/Station.js');
 const Productlist = require('../models/Productlist.js');
 const Beneficiary = require('../models/Beneficiary.js');
 const Category = require('../models/Category.js');
+const mongoose = require('mongoose');
+
 
 
 //CREATE a station
@@ -21,7 +23,11 @@ router.post('/', async (req, res) => {
     const change = populatedProductlist.every(product => product.tag === 'incoming') ? 'increase' : 'decrease';
   
     // Calculate the total for the station
-    const stationTotal = populatedCategory.reduce((acc, cat) => acc + cat.total, 0);
+    //const stationTotal = populatedCategory.reduce((acc, cat) => acc + cat.total, 0);
+    const stationTotal = populatedProductlist.reduce((acc, product) => acc + product.quantity, 0);
+    // const stationTotal = populatedProductlist.reduce((acc, product) => {
+    //   return acc + product.quantity;
+    // }, 0);
 
     console.log('total:', stationTotal)
     console.log('productlist:',  productlist)
@@ -71,20 +77,42 @@ router.get('/:id', async (req, res) => {
           res.json({message:err})
     }
   });
+  
 
   //UPDATE a station
-router.put('/:id', async (req, res) =>{
-    try{
-      const updateStation = await Station.updateOne(
-        {_id: req.params.id}, 
-        {$set: req.body}
-      );
-      res.json('Station Updated')
-    }
-    catch(err){
-      res.json({message:err})
-    }
-  });
+  router.put('/:id', async (req, res) =>{
+  try{
+    console.log('Request Body:', req.body);
+    const updatedProductlist = req.body.productlist.map(id => mongoose.Types.ObjectId(id));
+
+    const updateStation = await Station.updateOne(
+      {_id: req.params.id}, 
+      {$set: { productlist: updatedProductlist }}
+    );
+
+    res.json('Station Updated')
+  }
+  catch(err){
+    res.json({message:err})
+  }
+});
+
+
+  //UPDATE a station
+// router.put('/:id/productlist', async (req, res) =>{
+//     try{
+//       const updateStation = await Station.updateOne(
+//         req.params.id,
+//         { productlist: req.body.productlist },
+//         { new: true }
+//       );
+//       res.json('Station Updated')
+//     }
+//     catch(err){
+//       res.json({message:err})
+//     }
+//   });
+
 
   // DELETE a station
 router.delete('/:id', async (req, res) => {
