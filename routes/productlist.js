@@ -5,21 +5,19 @@ const Station = require('../models/Station');
 const Category = require('../models/Category');
 const User = require('../models/User');
 
-//CREATE a new post
-router.post('/', async (req, res) => {
-  const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
-  console.log('Tag:', tag);
 
-  try { 
-    const populatedStation = await Station.findById(station);
+// Step 1: Create the product list item
+router.post('/', async (req, res) => {
+  const { name, quantity, value, category, tag, storeofficer, verificationofficer } = req.body;
+
+  try {
     const populatedCategory = await Category.findById(category);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
-    console.log('station:',  station);
     console.log('category:',  category);
     console.log('storeofficer:',  storeofficer);
-    if (!populatedStation || !populatedCategory || !populatedStoreofficer) {
+    if (!populatedCategory || !populatedStoreofficer) {
       return res.status(404).json({ error: 'One or more items not found' });
     }
 
@@ -27,14 +25,76 @@ router.post('/', async (req, res) => {
       name,
       quantity,
       value,
-      station:populatedStation,
-      category:populatedCategory,
+      category: populatedCategory,
       tag,
-      storeofficer:populatedStoreofficer,
-      verificationofficer:populatedVerificationofficer
+      storeofficer: populatedStoreofficer,
+      verificationofficer: populatedVerificationofficer
     });
 
     await newProductlist.save();
+
+    res.json(newProductlist);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Step 2: Update the product list item with station ID
+router.put('/:id', async (req, res) => {
+  const productId = req.params.id;
+  const stationId = req.body.station;
+
+  try {
+    const updatedProductlist = await Productlist.findByIdAndUpdate(
+      productId,
+      { $set: { station: stationId } },
+      { new: true }
+    );
+
+    res.json(updatedProductlist);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
+//CREATE a new post
+// router.post('/', async (req, res) => {
+//   const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
+//   console.log('Tag:', tag);
+
+//   try { 
+//     const populatedStation = await Station.findById(station);
+//     const populatedCategory = await Category.findById(category);
+//     const populatedStoreofficer = await User.findById(storeofficer);
+//     const populatedVerificationofficer = await User.findById(verificationofficer);
+
+//     console.log('station:',  station);
+//     console.log('category:',  category);
+//     console.log('storeofficer:',  storeofficer);
+//     if (!populatedStation || !populatedCategory || !populatedStoreofficer) {
+//       return res.status(404).json({ error: 'One or more items not found' });
+//     }
+
+//     const newProductlist = new Productlist({
+//       name,
+//       quantity,
+//       value,
+//       station:populatedStation,
+//       category:populatedCategory,
+//       tag,
+//       storeofficer:populatedStoreofficer,
+//       verificationofficer:populatedVerificationofficer
+//     });
+
+//     await newProductlist.save();
     
     
     // Update the category's total count
@@ -53,12 +113,12 @@ router.post('/', async (req, res) => {
     // console.log(`Change property updated to: ${populatedStation.change}`);
     // await populatedStation.save();
 
-    res.json(newProductlist);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     res.json(newProductlist);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 // GET all products
 router.get('/', async (req, res) => {
@@ -84,18 +144,18 @@ router.get('/:id', async (req, res) => {
 });
 
 // UPDATE a product
-router.put('/:id', async (req, res) =>{
-  try{
-    const updateProductlist = await Productlist.updateOne(
-      {_id: req.params.id}, 
-      {$set: req.body}
-    );
-    res.json(updateProductlist)
-  }
-  catch(err){ 
-    res.json({message:'product not updated'}) 
-  }
-});
+// router.put('/:id', async (req, res) =>{
+//   try{
+//     const updateProductlist = await Productlist.updateOne(
+//       {_id: req.params.id}, 
+//       {$set: req.body}
+//     );
+//     res.json(updateProductlist)
+//   }
+//   catch(err){ 
+//     res.json({message:'product not updated'}) 
+//   }
+// });
 
 
 // DELETE a product
