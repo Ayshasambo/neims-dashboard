@@ -8,9 +8,10 @@ const User = require('../models/User');
 
 // Step 1: Create the product list item
 router.post('/', async (req, res) => {
-  const { name, quantity, value, category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
 
   try {
+    const populatedStation = await Station.findById(station);
     const populatedCategory = await Category.findById(category);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
@@ -25,6 +26,7 @@ router.post('/', async (req, res) => {
       name,
       quantity,
       value,
+      station: populatedStation,
       category: populatedCategory,
       tag,
       storeofficer: populatedStoreofficer,
@@ -50,7 +52,7 @@ router.put('/:id', async (req, res) => {
       productId,
       { $set: { station: stationId } },
       { new: true }
-    );
+    ).populate('station');;
 
     res.json(updatedProductlist);
   } catch (error) {
