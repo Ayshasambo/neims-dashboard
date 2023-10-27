@@ -15,11 +15,11 @@ const productlistSchema = new mongoose.Schema({
   // station:{
   //   type : String
   // },
-  // station:{
-  //    id: {
-  //    type: String},
-  //    name: {type: String}
-  // },
+  station:{
+     id: {
+     type: String},
+     name: {type: String}
+  },
   category:{
     id:{type:String},
     name: {type: String}
