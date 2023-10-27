@@ -24,10 +24,9 @@ router.post('/', async (req, res) => {
   
     // Calculate the total for the station
     //const stationTotal = populatedCategory.reduce((acc, cat) => acc + cat.total, 0);
-    const stationTotal = populatedProductlist.reduce((acc, product) => acc + product.quantity, 0);
-    // const stationTotal = populatedProductlist.reduce((acc, product) => {
-    //   return acc + product.quantity;
-    // }, 0);
+    const stationTotal = populatedProductlist.reduce((acc, product) => {
+      return acc + parseInt(product.quantity, 10);
+    }, 0);
 
     console.log('total:', stationTotal)
     console.log('productlist:',  productlist)
