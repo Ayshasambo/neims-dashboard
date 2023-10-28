@@ -8,7 +8,7 @@ const User = require('../models/User');
 
 // Step 1: Create the product list item
 router.post('/', async (req, res) => {
-  const { name, quantity, value, category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity, category, tag, storeofficer, verificationofficer } = req.body;
   try {
     //const populatedStation = await Station.findById(station);
     const populatedCategory = await Category.findById(category);
@@ -24,7 +24,6 @@ router.post('/', async (req, res) => {
     const newProductlist = new Productlist({
       name,
       quantity,
-      value,
       //station: populatedStation,
       category: populatedCategory,
       tag,
@@ -45,7 +44,7 @@ router.post('/', async (req, res) => {
 
 // Handle outgoing operation
 router.put('/:id/outgoing', async (req, res) => {
-  const productlistId = req.params.productlistId;
+  const productlistId = req.params.id;
   const { quantity } = req.body;
 
   try {
@@ -61,6 +60,13 @@ router.put('/:id/outgoing', async (req, res) => {
 
     // Update quantity
     productlist.quantity -= quantity;
+
+    //update category and station
+    const populatedCategory = await Category.findById(product.category.id);
+    // Update category total
+    populatedCategory.total -= quantity;
+    await populatedCategory.save();
+
 
     // Create a new bincard entry
     const newBincard = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });

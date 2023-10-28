@@ -9,9 +9,6 @@ const productlistSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  value: {
-    type: String,
-  },
   // station:{
   //    id: {type: String},
   //    name: {type: String}
