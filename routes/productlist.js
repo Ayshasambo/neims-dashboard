@@ -6,7 +6,7 @@ const Category = require('../models/Category');
 const User = require('../models/User');
 
 
-// Step 1: Create the product list item
+// Create the product list item
 router.post('/', async (req, res) => {
   const { name, quantity, category, tag, storeofficer, verificationofficer } = req.body;
   try {
@@ -75,6 +75,59 @@ router.put('/:id/outgoing', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+// GET all products
+router.get('/', async (req, res) => {
+  try {
+    const products = await Productlist.find().sort({createdAt:-1});
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// GET a single product
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await Productlist.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// DELETE a product
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedProduct = await Productlist.findByIdAndDelete(req.params.id);
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json({ message: 'Product deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// UPDATE a product
+router.patch('/:id', async (req, res) =>{
+  try{
+    const updateProductlist = await Productlist.updateOne(
+      {_id: req.params.id}, 
+      {$set: req.body}
+    );
+    res.json("product updated")
+  }
+  catch(err){ 
+    res.json({message:'product not updated'}) 
+  }
+});
+
+
 
 
 
@@ -206,28 +259,9 @@ router.put('/:id/outgoing', async (req, res) => {
 //   }
 // });
 
-// GET all products
-router.get('/', async (req, res) => {
-  try {
-    const products = await Productlist.find().sort({createdAt:-1});
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
-// GET a single product
-router.get('/:id', async (req, res) => {
-  try {
-    const product = await Productlist.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+
+
 
 // UPDATE a product
 // router.put('/:id', async (req, res) =>{
@@ -244,18 +278,7 @@ router.get('/:id', async (req, res) => {
 // });
 
 
-// DELETE a product
-router.delete('/:id', async (req, res) => {
-  try {
-    const deletedProduct = await Productlist.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-    res.json({ message: 'Product deleted' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+
 
 module.exports = router;
 
