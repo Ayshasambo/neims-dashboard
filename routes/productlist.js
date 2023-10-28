@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Productlist = require('../models/Productlist');
 const Bincard = require('../models/Bincard');
-const Station = require('../models/Station');
 const Category = require('../models/Category');
 const User = require('../models/User');
 
@@ -11,7 +10,6 @@ const User = require('../models/User');
 router.post('/', async (req, res) => {
   const { name, quantity, category, tag, storeofficer, verificationofficer } = req.body;
   try {
-    //const populatedStation = await Station.findById(station);
     const populatedCategory = await Category.findById(category);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
@@ -25,7 +23,6 @@ router.post('/', async (req, res) => {
     const newProductlist = new Productlist({
       name,
       quantity,
-      //station: populatedStation,
       category: populatedCategory,
       tag,
       storeofficer: populatedStoreofficer,
@@ -63,8 +60,8 @@ router.put('/:id/outgoing', async (req, res) => {
     productlist.quantity -= quantity;
 
     // Create a new bincard entry
-    const newBincard = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
-    await newBincard.save();
+    const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
+    await newBincardentry.save();
 
     if (productlist.quantity === 0) {
       productlist.tag = 'outgoing';
