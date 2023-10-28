@@ -25,6 +25,7 @@ const permissionRoute = require('./routes/permission');
 const beneficiaryRoute = require('./routes/beneficiary');
 const categoryRoute = require('./routes/category');
 const productlistRoute = require('./routes/productlist');
+const bincardRoute = require('./routes/bincard');
 
 //middlewares
 app.use(express.json());
@@ -36,5 +37,6 @@ app.use('/api/permission', permissionRoute);
 app.use('/api/beneficiary', beneficiaryRoute);
 app.use('/api/category', categoryRoute);
 app.use('/api/productlist', productlistRoute);
+app.use('/api/bincard', bincardRoute);
 
 app.listen(process.env.PORT, () => console.log(`Listening on port ${process.env.PORT}...`));

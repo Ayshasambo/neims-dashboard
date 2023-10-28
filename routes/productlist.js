@@ -9,7 +9,6 @@ const User = require('../models/User');
 // Step 1: Create the product list item
 router.post('/', async (req, res) => {
   const { name, quantity, value, category, tag, storeofficer, verificationofficer } = req.body;
-
   try {
     //const populatedStation = await Station.findById(station);
     const populatedCategory = await Category.findById(category);
@@ -42,30 +41,90 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Step 2: Update the product list item with station ID
-router.put('/:id', async (req, res) => {
-  const productId = req.params.id;
-  const stationId = req.body.station;
+
+
+// Handle outgoing operation
+router.put('/:id/outgoing', async (req, res) => {
+  const productlistId = req.params.productlistId;
+  const { quantity } = req.body;
 
   try {
-    const station = await Station.findById(stationId);
+    const productlist = await Productlist.findById(productlistId);
 
-    if (!station) {
-      return res.status(404).json({ error: 'Station not found' });
+    if (!productlist) {
+      return res.status(404).json({ error: 'Product not found' });
     }
 
-    const updatedProductlist = await Productlist.findByIdAndUpdate(
-      productId,
-      { $set: { station: { _id: station._id, name: station.name } } },
-      { new: true }
-    );
+    if (quantity > productlist.quantity) {
+      return res.status(400).json({ error: 'Invalid quantity' });
+    }
 
-    res.json(updatedProductlist);
+    // Update quantity
+    productlist.quantity -= quantity;
+
+    // Create a new bincard entry
+    const newBincard = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
+    await newBincard.save();
+
+    if (productlist.quantity === 0) {
+      productlist.tag = 'outgoing';
+    }
+
+    await productlist.save();
+
+    res.json(productlist);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Step 2: Update the product list item with station ID
+// router.put('/:id', async (req, res) => {
+//   const productId = req.params.id;
+//   const stationId = req.body.station;
+
+//   try {
+//     const station = await Station.findById(stationId);
+
+//     if (!station) {
+//       return res.status(404).json({ error: 'Station not found' });
+//     }
+
+//     const updatedProductlist = await Productlist.findByIdAndUpdate(
+//       productId,
+//       { $set: { station: { _id: station._id, name: station.name } } },
+//       { new: true }
+//     );
+
+//     res.json(updatedProductlist);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 
 
@@ -202,3 +261,10 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
