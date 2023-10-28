@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Productlist = require('../models/Productlist');
+const Bincard = require('../models/Bincard');
 const Station = require('../models/Station');
 const Category = require('../models/Category');
 const User = require('../models/User');
