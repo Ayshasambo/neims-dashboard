@@ -63,7 +63,7 @@ router.put('/:id/outgoing', async (req, res) => {
     const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
     await newBincardentry.save();
 
-    if (productlist.quantity === 0) {
+    if (productlist.quantity > 0) {
       productlist.tag = 'outgoing';
     }
 
