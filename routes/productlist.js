@@ -62,10 +62,10 @@ router.put('/:id/outgoing', async (req, res) => {
     productlist.quantity -= quantity;
 
     //update category and station
-    const populatedCategory = await Category.findById(product.category.id);
+   // const populatedCategory = await Category.findById(product.category.id);
     // Update category total
-    populatedCategory.total -= quantity;
-    await populatedCategory.save();
+    //populatedCategory.total -= quantity;
+    //await populatedCategory.save();
 
 
     // Create a new bincard entry
