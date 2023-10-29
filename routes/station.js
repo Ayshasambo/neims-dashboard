@@ -29,11 +29,11 @@ router.post('/', async (req, res) => {
     console.log('category:',  category)
 
     // Calculate category totals
-    const categoryTotals = {};
-    populatedProductlist.forEach(product => {
-      const categoryId = product.category.toString(); // Convert category ID to string
-      categoryTotals[categoryId] = (categoryTotals[categoryId] || 0) + parseInt(product.quantity);
-    });
+    // const categoryTotals = {};
+    // populatedProductlist.forEach(product => {
+    //   const categoryId = product.category.toString(); // Convert category ID to string
+    //   categoryTotals[categoryId] = (categoryTotals[categoryId] || 0) + parseInt(product.quantity);
+    // });
 
     if (!populatedProductlist || !populatedBeneficiaries || !populatedCategory) {
       return res.status(404).json({ error: 'One or more items not found' });
