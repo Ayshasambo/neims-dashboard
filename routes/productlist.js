@@ -114,7 +114,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // UPDATE a product
-router.patch('/:id', async (req, res) =>{
+router.put('/:id', async (req, res) =>{
   try{
     const updateProductlist = await Productlist.updateOne(
       {_id: req.params.id}, 
