@@ -18,9 +18,6 @@ router.post('/', async (req, res) => {
 
     console.log('category:',  category);
     console.log('storeofficer:',  storeofficer);
-    if (!populatedCategory || !populatedStoreofficer) {
-      return res.status(404).json({ error: 'One or more items not found' });
-    }
 
     const newProductlist = new Productlist({
       name,
