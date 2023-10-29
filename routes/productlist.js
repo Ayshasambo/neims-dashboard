@@ -9,7 +9,7 @@ const Station = require('../models/Station');
 
 // Create the product list item
 router.post('/', async (req, res) => {
-  const { name, quantity,station, category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity,  category, tag, storeofficer, verificationofficer } = req.body;
   try {
     const populatedCategory = await Category.findById(category);
     const populatedStoreofficer = await User.findById(storeofficer);
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     const newProductlist = new Productlist({
       name,
       quantity,
-      station,
+      //station,
       category: populatedCategory,
       tag,
       storeofficer: populatedStoreofficer,
@@ -138,6 +138,7 @@ router.put('/:id', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
 
 
 // UPDATE a product
