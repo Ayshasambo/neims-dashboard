@@ -114,18 +114,37 @@ router.delete('/:id', async (req, res) => {
 });
 
 // UPDATE a product
-router.put('/:id', async (req, res) =>{
-  try{
-    const updateProductlist = await Productlist.updateOne(
-      {_id: req.params.id}, 
-      {$set: req.body}
-    );
-    res.json("product updated")
-  }
-  catch(err){ 
-    res.json({message:'product not updated'}) 
+// router.put('/:id', async (req, res) =>{
+//   try{
+//     const updateProductlist = await Productlist.updateOne(
+//       {_id: req.params.id}, 
+//       {$set: req.body}
+//     );
+//     res.json("product updated")
+//   }
+//   catch(err){ 
+//     res.json({message:'product not updated'}) 
+//   }
+// });
+
+router.put('/:id', async (req, res) => {
+  const productId = req.params.id;
+  const stationId = req.body.station;
+
+  try {
+    const updatedProductlist = await Productlist.findByIdAndUpdate(
+      productId,
+      { $set: { station: stationId } },
+      { new: true }
+    ).populate('station');
+
+    res.json(updatedProductlist);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 
@@ -180,23 +199,6 @@ router.put('/:id', async (req, res) =>{
 
 
 
-// router.put('/:id', async (req, res) => {
-//   const productId = req.params.id;
-//   const stationId = req.body.station;
-
-//   try {
-//     const updatedProductlist = await Productlist.findByIdAndUpdate(
-//       productId,
-//       { $set: { station: stationId } },
-//       { new: true }
-//     ).populate('station');
-
-//     res.json(updatedProductlist);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
 
 
 
