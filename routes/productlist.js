@@ -38,16 +38,14 @@ router.post('/', async (req, res) => {
     populatedCategory.total += quantity;
     await populatedCategory.save();
 
-
-    // Add new product list item to the station's productlist array
+    // Add new product to station
     populatedStation.productlist.push(newProductlist);
     
-    // Update the total property of the station
+    // Update station's total
     populatedStation.total += parseInt(quantity, 10);
 
     await populatedStation.save();
     
-
     res.json(newProductlist);
   } catch (error) {
     console.error(error);
@@ -70,11 +68,9 @@ router.put('/:id/outgoing', async (req, res) => {
     if (quantity > productlist.quantity) {
       return res.status(400).json({ error: 'Invalid quantity' });
     }
-
-    // Update quantity
     productlist.quantity -= quantity;
 
-    // Create a new bincard entry
+    // Create Bincard
     const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
     await newBincardentry.save();
 
@@ -137,200 +133,19 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// router.put('/:id', async (req, res) => {
-//     const productId = req.params.id;
-//     const stationId = req.body.station;
-  
-//     try {
-//       const station = await Station.findById(stationId);
-  
-//       if (!station) {
-//         return res.status(404).json({ error: 'Station not found' });
-//       }
-  
-//       const updatedProductlist = await Productlist.findByIdAndUpdate(
-//         productId,
-//         { $set: { station: { _id: station._id, name: station.name } } },
-//         { new: true }
-//       );
-  
-//       res.json(updatedProductlist);
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   });
-
-
-
 // UPDATE a product
-// router.put('/:id', async (req, res) =>{
-//   try{
-//     const updateProductlist = await Productlist.updateOne(
-//       {_id: req.params.id}, 
-//       {$set: req.body}
-//     );
-//     res.json("product updated")
-//   }
-//   catch(err){ 
-//     res.json({message:'product not updated'}) 
-//   }
-// });
-
-// router.put('/:id', async (req, res) => {
-//   const productId = req.params.id;
-//   const stationId = req.body.station;
-
-//   try {
-//     const updatedProductlist = await Productlist.findByIdAndUpdate(
-//       productId,
-//       { $set: { station: stationId } },
-//       { new: true }
-//     ).populate('station');
-
-//     res.json(updatedProductlist);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Step 2: Update the product list item with station ID
-// router.put('/:id', async (req, res) => {
-//   const productId = req.params.id;
-//   const stationId = req.body.station;
-
-//   try {
-//     const station = await Station.findById(stationId);
-
-//     if (!station) {
-//       return res.status(404).json({ error: 'Station not found' });
-//     }
-
-//     const updatedProductlist = await Productlist.findByIdAndUpdate(
-//       productId,
-//       { $set: { station: { _id: station._id, name: station.name } } },
-//       { new: true }
-//     );
-
-//     res.json(updatedProductlist);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-//CREATE a new post
-// router.post('/', async (req, res) => {
-//   const { name, quantity, value, station, category, tag, storeofficer, verificationofficer } = req.body;
-//   console.log('Tag:', tag);
-
-//   try { 
-//     const populatedStation = await Station.findById(station);
-//     const populatedCategory = await Category.findById(category);
-//     const populatedStoreofficer = await User.findById(storeofficer);
-//     const populatedVerificationofficer = await User.findById(verificationofficer);
-
-//     console.log('station:',  station);
-//     console.log('category:',  category);
-//     console.log('storeofficer:',  storeofficer);
-//     if (!populatedStation || !populatedCategory || !populatedStoreofficer) {
-//       return res.status(404).json({ error: 'One or more items not found' });
-//     }
-
-//     const newProductlist = new Productlist({
-//       name,
-//       quantity,
-//       value,
-//       station:populatedStation,
-//       category:populatedCategory,
-//       tag,
-//       storeofficer:populatedStoreofficer,
-//       verificationofficer:populatedVerificationofficer
-//     });
-
-//     await newProductlist.save();
-    
-    
-//     // Update the category's total count
-//     if (tag === 'Incoming') {
-//       populatedCategory.total += parseInt(quantity, 10);
-//     } else if (tag === 'Outgoing') {
-//       populatedCategory.total -= parseInt(quantity, 10);
-//     }
-//     await populatedCategory.save();
-
-//     // Update the station's change property
-//     populatedStation.change = populatedCategory.total < 0 ? 'decrease' : 'increase';
-//     if (req.body.tag === 'Outgoing') {
-//         populatedStation.change = 'decrease';
-//     }
-//     console.log(`Change property updated to: ${populatedStation.change}`);
-//     await populatedStation.save();
-
-//     res.json(newProductlist);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
-
-
-
-// UPDATE a product
-// router.put('/:id', async (req, res) =>{
-//   try{
-//     const updateProductlist = await Productlist.updateOne(
-//       {_id: req.params.id}, 
-//       {$set: req.body}
-//     );
-//     res.json(updateProductlist)
-//   }
-//   catch(err){ 
-//     res.json({message:'product not updated'}) 
-//   }
-// });
-
-
-
+router.put('/:id', async (req, res) =>{
+  try{
+    const updateProductlist = await Productlist.updateOne(
+      {_id: req.params.id}, 
+      {$set: req.body}
+    );
+    res.json("product updated")
+  }
+  catch(err){ 
+    res.json({message:'product not updated'}) 
+  }
+});
 
 module.exports = router;
 

@@ -88,31 +88,6 @@ router.get('/:id', async (req, res) => {
           res.json({message:err})
     }
   });
-  
-
-  //UPDATE a station
-//   router.put('/:id', async (req, res) =>{
-//   try{
-//     console.log('Request Body:', req.body);
-//     const stationId = req.params.id;
-//     const productIds = req.body.productlist;
-//     console.log('Station ID:', stationId);
-//     console.log('Product IDs:', productIds);
-
-//     const updatedProductlist = req.body.productlist.map(id => mongoose.Types.ObjectId(id));
-//     const updateStation = await Station.findByIdAndUpdate(
-//       {_id: req.params.id}, 
-//       {$set: { productlist: updatedProductlist }},
-//       { new: true }
-//     );
-//     console.log('Update Result:', updateStation);
-
-//     res.json('Station Updated')
-//   }
-//   catch(err){
-//     res.json({message:err})
-//   }
-// });
 
   // DELETE a station
 router.delete('/:id', async (req, res) => {
@@ -128,24 +103,14 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const stationId = req.body.station;
-    const productlistId = req.params.id;
-  
     try {
-      const productlist = await Productlist.findById(productlistId);
-  
-      if (!productlist) {
-        return res.status(404).json({ error: 'product not found' });
-      }
-  
       const updatedStation = await Station.findByIdAndUpdate(
-        stationId,
-        { $set: { productlist: [{ _id: productlist._id, name: productlist.name }] } },
+        { $set},
         { new: true }
       );
-  
       res.json(updatedStation);
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }

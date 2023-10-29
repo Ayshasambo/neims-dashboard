@@ -16,34 +16,6 @@ router.post('/', async (req, res) => {
     }
   });
 
-
-// router.post('/', async (req, res) => {
-//   const { name, total, station } = req.body;
-//   try { 
-//     const populatedStation = await Station.findById(station);
-
-//     console.log('station:',  station);
-
-//     if (!populatedStation) {
-//       return res.status(404).json({ error: 'One or more items not found' });
-//     }
-
-//     const newCategory = new Category({
-//       name,
-//       total,
-//       //station:populatedStation,
-//     });
-
-//     await newCategory.save();
-
-//     res.json(newCategory);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
   // GET all categories
 router.get('/', async (req, res) => {
     try {
@@ -54,7 +26,7 @@ router.get('/', async (req, res) => {
     }
   });
 
-// GET a single category
+// GET a category
 router.get('/:id', async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
