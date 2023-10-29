@@ -4,6 +4,7 @@ const Productlist = require('../models/Productlist');
 const Bincard = require('../models/Bincard');
 const Category = require('../models/Category');
 const User = require('../models/User');
+const Station = require('../models/Station');
 
 
 // Create the product list item
