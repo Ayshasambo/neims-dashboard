@@ -35,8 +35,6 @@ router.post('/', async (req, res) => {
 
     // Update category total
     populatedCategory.total += parseInt(quantity, 10);
-  
-    // populatedCategory.total += quantity;
      await populatedCategory.save();
 
     // Add new product to station
@@ -46,6 +44,10 @@ router.post('/', async (req, res) => {
     populatedStation.total += parseInt(quantity, 10);
 
     await populatedStation.save();
+
+    // Update category in Productlist
+    newProductlist.category = populatedCategory;
+    await newProductlist.save();
     
     res.json(newProductlist);
   } catch (error) {
