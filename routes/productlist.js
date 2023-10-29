@@ -79,13 +79,13 @@ router.put('/:id/outgoing', async (req, res) => {
     await populatedCategory.save();
 
     // Update station total
-    populatedStation.total -= quantity;
+    // populatedStation.total -= quantity;
 
-    if (populatedStation.total > 0) {
-      populatedStation.change = 'decrease';
-    }
+    // if (populatedStation.total > 0) {
+    //   populatedStation.change = 'decrease';
+    // }
 
-    await populatedStation.save();
+    // await populatedStation.save();
 
 
 
