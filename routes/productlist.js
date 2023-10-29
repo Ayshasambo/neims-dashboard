@@ -9,9 +9,10 @@ const Station = require('../models/Station');
 
 // Create the product list item
 router.post('/', async (req, res) => {
-  const { name, quantity,  category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity,  station, category, tag, storeofficer, verificationofficer } = req.body;
   try {
     const populatedCategory = await Category.findById(category);
+    const populatedStation = await Station.findById(category);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
@@ -21,10 +22,19 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ error: 'One or more items not found' });
     }
 
+    // Update category total
+    populatedCategory.total += quantity;
+    await populatedCategory.save();
+
+    // Update station total
+    populatedStation.total += quantity;
+    populatedStation.change = 'increase';
+    await populatedStation.save();
+
     const newProductlist = new Productlist({
       name,
       quantity,
-      //station,
+      station: populatedStation,
       category: populatedCategory,
       tag,
       storeofficer: populatedStoreofficer,
@@ -33,9 +43,7 @@ router.post('/', async (req, res) => {
 
     await newProductlist.save();
 
-    // Update category total
-    populatedCategory.total += quantity;
-    await populatedCategory.save();
+    
 
     res.json(newProductlist);
   } catch (error) {
@@ -64,6 +72,22 @@ router.put('/:id/outgoing', async (req, res) => {
 
     // Update quantity
     productlist.quantity -= quantity;
+
+    const populatedCategory = await Category.findById(product.category.id);
+    // Update category total
+    populatedCategory.total -= quantity;
+    await populatedCategory.save();
+
+    // Update station total
+    populatedStation.total -= quantity;
+
+    if (populatedStation.total > 0) {
+      populatedStation.change = 'decrease';
+    }
+
+    await populatedStation.save();
+
+
 
     // Create a new bincard entry
     const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
