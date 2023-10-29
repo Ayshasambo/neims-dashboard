@@ -15,7 +15,8 @@ const productlistSchema = new mongoose.Schema({
   },
   category:{
     id:{type:String},
-    name: {type: String}
+    name: {type: String},
+    total:{type:Number}
   },
   tag:{
     type: String,

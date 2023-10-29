@@ -9,10 +9,10 @@ const Station = require('../models/Station');
 
 // Create the product list item
 router.post('/', async (req, res) => {
-  const { name, quantity,  station, category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity,   category, tag, storeofficer, verificationofficer } = req.body;
   try {
     const populatedCategory = await Category.findById(category);
-    const populatedStation = await Station.findById(category);
+    //const populatedStation = await Station.findById(category);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
     const newProductlist = new Productlist({
       name,
       quantity,
-      station: populatedStation,
+      //station: populatedStation,
       category: populatedCategory,
       tag,
       storeofficer: populatedStoreofficer,
