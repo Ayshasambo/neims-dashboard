@@ -89,9 +89,9 @@ router.put('/:id/outgoing', async (req, res) => {
     await productlist.save();
 
     // Update category total
-   const populatedCategory = await Category.findById(productlist.category.id);
-   populatedCategory.total -= quantity;
-   await populatedCategory.save();
+   const populatedCategoryEntry = await Category.findById(productlist.category.id);
+   populatedCategoryEntry.total -= quantity;
+   await populatedCategoryEntry.save();
 
    // Update station total
    const populatedStation = await Station.findById(productlist.station.id);
