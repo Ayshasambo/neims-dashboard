@@ -9,10 +9,10 @@ const productlistSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  // station:{
-  //    id: {type: String},
-  //    name: {type: String}
-  // },
+  station:{
+     id: {type: String},
+     name: {type: String}
+  },
   category:{
     id:{type:String},
     name: {type: String}
