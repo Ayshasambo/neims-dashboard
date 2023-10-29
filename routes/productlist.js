@@ -22,11 +22,6 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ error: 'One or more items not found' });
     }
    
-
-    // Update category total
-    populatedCategory.total += quantity;
-    await populatedCategory.save();
-
     // Update station total
     // populatedStation.total += quantity;
     // populatedStation.change = 'increase';
@@ -43,6 +38,11 @@ router.post('/', async (req, res) => {
     });
 
     await newProductlist.save();
+
+    // Update category total
+    populatedCategory.total += quantity;
+    await populatedCategory.save();
+
 
     // Add new product list item to the station's productlist array
     populatedStation.productlist.push(newProductlist);
