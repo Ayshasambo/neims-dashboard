@@ -24,8 +24,8 @@ router.post('/', async (req, res) => {
    
 
     // Update category total
-    // populatedCategory.total += quantity;
-    // await populatedCategory.save();
+    populatedCategory.total += quantity;
+    await populatedCategory.save();
 
     // Update station total
     // populatedStation.total += quantity;
