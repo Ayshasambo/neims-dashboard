@@ -34,11 +34,10 @@ router.post('/', async (req, res) => {
     await newProductlist.save();
 
     // Update category total
-    // Update category total
-   populatedCategory.total = parseInt(populatedCategory.total) + parseInt(quantity);
-    await populatedCategory.save();
+    populatedCategory.total += parseInt(quantity, 10);
+  
     // populatedCategory.total += quantity;
-    // await populatedCategory.save();
+     await populatedCategory.save();
 
     // Add new product to station
     populatedStation.productlist.push(newProductlist);
