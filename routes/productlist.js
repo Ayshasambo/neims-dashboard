@@ -16,8 +16,10 @@ router.post('/', async (req, res) => {
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
-    console.log('category:',  category);
-    console.log('storeofficer:',  storeofficer);
+    console.log('category:', category);
+    console.log('station:', station);
+    console.log('populatedCategory:', populatedCategory);
+    console.log('populatedStation:', populatedStation);
 
     const newProductlist = new Productlist({
       name,
@@ -77,9 +79,9 @@ router.put('/:id/outgoing', async (req, res) => {
     await productlist.save();
 
    // Decrement category total
-  //  const populatedCategory = await Category.findById(productlist.category.id);
-  //  populatedCategory.total -= quantity;
-  //  await populatedCategory.save();
+   const populatedCategory = await Category.findById(productlist.category.id);
+   populatedCategory.total -= quantity;
+   await populatedCategory.save();
 
    // Update station total and change property
    const populatedStation = await Station.findById(productlist.station.id);
