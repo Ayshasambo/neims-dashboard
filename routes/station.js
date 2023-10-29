@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
     const newStation = new Station({
       name,
       type,
-      total: stationTotal,
+      total,
       category:populatedCategory,
       change,
       productlist:populatedProductlist,
