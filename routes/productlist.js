@@ -7,7 +7,7 @@ const User = require('../models/User');
 const Station = require('../models/Station');
 
 
-// Create the product list item
+// create the products
 router.post('/', async (req, res) => {
   const { name, quantity, station,  category, tag, storeofficer, verificationofficer } = req.body;
   try {
@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
 
 
 
-// Handle outgoing operation
+// outgoing products
 router.put('/:id/outgoing', async (req, res) => {
   const productlistId = req.params.id;
   const { quantity } = req.body;

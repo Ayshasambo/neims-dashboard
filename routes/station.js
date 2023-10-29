@@ -6,7 +6,7 @@ const Beneficiary = require('../models/Beneficiary.js');
 const Category = require('../models/Category.js');
 
 
-//CREATE a station
+//Create a station
 router.post('/', async (req, res) => {
   console.log('Request Body:', req.body);
   const { name, type, total, category, change, productlist, beneficiaries } = req.body;
@@ -18,6 +18,10 @@ router.post('/', async (req, res) => {
 
     // Calculate the change based on the tag property in product list
     //const change = populatedProductlist.every(product => product.tag === 'incoming') ? 'increase' : 'decrease';
+
+    // Update category total
+    populatedCategory.total += quantity;
+    await populatedCategory.save();
   
     // Calculate the total for the station
     const stationTotal = populatedProductlist.reduce((acc, product) => {
@@ -66,7 +70,7 @@ router.post('/', async (req, res) => {
 });
 
 
-//GET all staions
+//Get all staions
 router.get('/', async (req, res) => {
     try{
      const station = await Station.find().sort({createdAt:-1});;
@@ -77,7 +81,7 @@ router.get('/', async (req, res) => {
    }
 });
 
-//GET a station
+//Get a station
 router.get('/:id', async (req, res) => {
     try{
       const station = await Station.findById(req.params.id);
@@ -89,7 +93,7 @@ router.get('/:id', async (req, res) => {
     }
   });
 
-  // DELETE a station
+  // Delete a station
 router.delete('/:id', async (req, res) => {
   try {
     const deletedStation = await Station.findByIdAndDelete(req.params.id);

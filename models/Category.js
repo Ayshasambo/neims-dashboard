@@ -9,12 +9,7 @@ const categorySchema = new mongoose.Schema({
     },
     color: {
         type: String 
-    },
-    // station:{
-    //     id: {
-    //     type: String},
-    //     name: {type: String}
-    //  },
+    }
 
 },
 {timestamps:true}
