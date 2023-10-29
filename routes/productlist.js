@@ -85,6 +85,9 @@ router.put('/:id/outgoing', async (req, res) => {
 
     // Decrement category total
     const populatedCategory = await Category.findById(productlist.category.id);
+    if (!populatedCategory) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
     populatedCategory.total -= quantity;
     await populatedCategory.save();
 
