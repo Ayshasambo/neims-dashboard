@@ -43,6 +43,16 @@ router.post('/', async (req, res) => {
 
     await newProductlist.save();
 
+    // Find the corresponding station and update its product list
+    const station = await Station.findById(populatedStation);
+
+    if (!station) {
+      return res.status(404).json({ error: 'Station not found' });
+    }
+
+    station.productlist.push(newProduct); // Add the new product to the product list
+    await station.save();
+
     
 
     res.json(newProductlist);
@@ -86,7 +96,6 @@ router.put('/:id/outgoing', async (req, res) => {
     }
 
     await populatedStation.save();
-
 
 
     // Create a new bincard entry

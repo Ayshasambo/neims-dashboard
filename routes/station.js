@@ -9,10 +9,10 @@ const Category = require('../models/Category.js');
 //CREATE a station
 router.post('/', async (req, res) => {
   console.log('Request Body:', req.body);
-  const { name, type, total, category, change, beneficiaries } = req.body;
+  const { name, type, total, category, change, productlist, beneficiaries } = req.body;
 
   try {
-    //const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
+    const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
     const populatedBeneficiaries = await Promise.all(beneficiaries.map(id => Beneficiary.findById(id)));
     const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
 
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
       total: stationTotal,
       category:populatedCategory,
       change,
-      //productlist:populatedProductlist,
+      productlist:populatedProductlist,
       beneficiaries:populatedBeneficiaries,
     });
 
