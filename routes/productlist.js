@@ -21,15 +21,16 @@ router.post('/', async (req, res) => {
     if (!populatedCategory || !populatedStoreofficer) {
       return res.status(404).json({ error: 'One or more items not found' });
     }
+   
 
     // Update category total
-    populatedCategory.total += quantity;
-    await populatedCategory.save();
+    // populatedCategory.total += quantity;
+    // await populatedCategory.save();
 
     // Update station total
-    populatedStation.total += quantity;
-    populatedStation.change = 'increase';
-    await populatedStation.save();
+    // populatedStation.total += quantity;
+    // populatedStation.change = 'increase';
+    // await populatedStation.save();
 
     const newProductlist = new Productlist({
       name,
@@ -43,16 +44,13 @@ router.post('/', async (req, res) => {
 
     await newProductlist.save();
 
-    // Find the corresponding station and update its product list
-    const station = await Station.findById(populatedStation);
+    // Add new product list item to the station's productlist array
+    populatedStation.productlist.push(newProductlist);
+    
+    // Update the total property of the station
+    populatedStation.total += parseInt(quantity, 10);
 
-    if (!station) {
-      return res.status(404).json({ error: 'Station not found' });
-    }
-
-    station.productlist.push(newProduct); // Add the new product to the product list
-    await station.save();
-
+    await populatedStation.save();
     
 
     res.json(newProductlist);
