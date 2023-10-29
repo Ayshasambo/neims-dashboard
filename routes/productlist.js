@@ -9,10 +9,10 @@ const Station = require('../models/Station');
 
 // Create the product list item
 router.post('/', async (req, res) => {
-  const { name, quantity,   category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity, station,  category, tag, storeofficer, verificationofficer } = req.body;
   try {
     const populatedCategory = await Category.findById(category);
-    //const populatedStation = await Station.findById(category);
+    const populatedStation = await Station.findById(station);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
@@ -27,14 +27,14 @@ router.post('/', async (req, res) => {
     await populatedCategory.save();
 
     // Update station total
-    // populatedStation.total += quantity;
-    // populatedStation.change = 'increase';
-    // await populatedStation.save();
+    populatedStation.total += quantity;
+    populatedStation.change = 'increase';
+    await populatedStation.save();
 
     const newProductlist = new Productlist({
       name,
       quantity,
-      //station: populatedStation,
+      station: populatedStation,
       category: populatedCategory,
       tag,
       storeofficer: populatedStoreofficer,
@@ -79,13 +79,13 @@ router.put('/:id/outgoing', async (req, res) => {
     await populatedCategory.save();
 
     // Update station total
-    // populatedStation.total -= quantity;
+    populatedStation.total -= quantity;
 
-    // if (populatedStation.total > 0) {
-    //   populatedStation.change = 'decrease';
-    // }
+    if (populatedStation.total > 0) {
+      populatedStation.change = 'decrease';
+    }
 
-    // await populatedStation.save();
+    await populatedStation.save();
 
 
 
@@ -143,29 +143,29 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-    const productId = req.params.id;
-    const stationId = req.body.station;
+// router.put('/:id', async (req, res) => {
+//     const productId = req.params.id;
+//     const stationId = req.body.station;
   
-    try {
-      const station = await Station.findById(stationId);
+//     try {
+//       const station = await Station.findById(stationId);
   
-      if (!station) {
-        return res.status(404).json({ error: 'Station not found' });
-      }
+//       if (!station) {
+//         return res.status(404).json({ error: 'Station not found' });
+//       }
   
-      const updatedProductlist = await Productlist.findByIdAndUpdate(
-        productId,
-        { $set: { station: { _id: station._id, name: station.name } } },
-        { new: true }
-      );
+//       const updatedProductlist = await Productlist.findByIdAndUpdate(
+//         productId,
+//         { $set: { station: { _id: station._id, name: station.name } } },
+//         { new: true }
+//       );
   
-      res.json(updatedProductlist);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
+//       res.json(updatedProductlist);
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     }
+//   });
 
 
 
