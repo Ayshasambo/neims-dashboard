@@ -21,11 +21,6 @@ router.post('/', async (req, res) => {
     if (!populatedCategory || !populatedStoreofficer) {
       return res.status(404).json({ error: 'One or more items not found' });
     }
-   
-    // Update station total
-    // populatedStation.total += quantity;
-    // populatedStation.change = 'increase';
-    // await populatedStation.save();
 
     const newProductlist = new Productlist({
       name,
@@ -80,15 +75,15 @@ router.put('/:id/outgoing', async (req, res) => {
     productlist.quantity -= quantity;
 
     // Fetch category total from the database
-    const populatedCategory = await Category.findById(productlist.category.id);
+    // const populatedCategory = await Category.findById(productlist.category.id);
 
-    if (!populatedCategory) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
+    // if (!populatedCategory) {
+    //   return res.status(404).json({ error: 'Category not found' });
+    // }
 
-    // Update category total
-    populatedCategory.total -= quantity;
-    await populatedCategory.save();
+    // // Update category total
+    // populatedCategory.total -= quantity;
+    // await populatedCategory.save();
 
     // Create a new bincard entry
     const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
