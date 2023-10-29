@@ -46,8 +46,14 @@ router.post('/', async (req, res) => {
     await populatedStation.save();
 
     // Update category in Productlist
-    newProductlist.category = populatedCategory;
-    await newProductlist.save();
+    // newProductlist.category = populatedCategory;
+    // await newProductlist.save();
+
+    const categoryTotals = {};
+    populatedProductlist.forEach(product => {
+      const categoryId = product.category.toString(); // Convert category ID to string
+      categoryTotals[categoryId] = (categoryTotals[categoryId] || 0) + parseInt(product.quantity);
+    });
     
     res.json(newProductlist);
   } catch (error) {
