@@ -77,14 +77,17 @@ router.put('/:id/outgoing', async (req, res) => {
     await productlist.save();
 
    // Decrement category total
-   const populatedCategory = await Category.findById(productlist.category.id);
-   populatedCategory.total -= quantity;
-   await populatedCategory.save();
+  //  const populatedCategory = await Category.findById(productlist.category.id);
+  //  populatedCategory.total -= quantity;
+  //  await populatedCategory.save();
 
-   // Decrement station total
+   // Update station total and change property
    const populatedStation = await Station.findById(productlist.station.id);
-   populatedStation.total -= quantity;
-   await populatedStation.save();
+   if (populatedStation) {
+     populatedStation.total -= quantity;
+     populatedStation.change = 'decrease';
+     await populatedStation.save();
+   }
 
     res.json(productlist);
   } catch (error) {
