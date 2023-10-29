@@ -89,7 +89,7 @@ router.put('/:id/outgoing', async (req, res) => {
     // Update category total
     populatedCategory.total -= quantity;
     await populatedCategory.save();
-//update
+
     // Create a new bincard entry
     const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
     await newBincardentry.save();
