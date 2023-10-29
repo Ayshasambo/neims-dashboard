@@ -81,7 +81,7 @@ router.put('/:id/outgoing', async (req, res) => {
     // Update quantity
     productlist.quantity -= quantity;
 
-    const populatedCategory = await Category.findById(product.category.id);
+    const populatedCategory = await Category.findById(productlist.category.id);
     // Update category total
     populatedCategory.total -= quantity;
     await populatedCategory.save();
