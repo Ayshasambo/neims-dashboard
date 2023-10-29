@@ -19,9 +19,9 @@ router.post('/', async (req, res) => {
     // Calculate the change based on the tag property in product list
     //const change = populatedProductlist.every(product => product.tag === 'incoming') ? 'increase' : 'decrease';
     // Calculate the total for the station
-    const stationTotal = populatedProductlist.reduce((acc, product) => {
-      return acc + parseInt(product.quantity, 10);
-    }, 0);
+    // const stationTotal = populatedProductlist.reduce((acc, product) => {
+    //   return acc + parseInt(product.quantity, 10);
+    // }, 0);
 
     console.log('total:', stationTotal)
     console.log('productlist:',  productlist)
