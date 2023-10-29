@@ -27,9 +27,9 @@ router.post('/', async (req, res) => {
     await populatedCategory.save();
 
     // Update station total
-    populatedStation.total += quantity;
-    populatedStation.change = 'increase';
-    await populatedStation.save();
+    // populatedStation.total += quantity;
+    // populatedStation.change = 'increase';
+    // await populatedStation.save();
 
     const newProductlist = new Productlist({
       name,
