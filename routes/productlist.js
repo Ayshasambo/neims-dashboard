@@ -83,25 +83,20 @@ router.put('/:id/outgoing', async (req, res) => {
     const newBincardentry = new Bincard({ productlist: productlistId, quantity, reason: 'Outgoing' });
     await newBincardentry.save();
 
-    // Update category total for outgoing product
-    const populatedCategory = await Category.findById(productlist.category.id);
-    if (populatedCategory) {
-      populatedCategory.total -= quantity;
-      await populatedCategory.save();
-    }
-
-    // Update station total for outgoing product
-    const populatedStation = await Station.findById(productlist.station.id);
-    if (populatedStation) {
-      populatedStation.total -= quantity;
-      await populatedStation.save();
-    }
-
     if (productlist.quantity > 0) {
       productlist.tag = 'outgoing';
     }
 
     await productlist.save();
+    // Decrement category total
+    const populatedCategory = await Category.findById(productlist.category.id);
+    populatedCategory.total -= quantity;
+    await populatedCategory.save();
+
+    // Decrement station total
+    const populatedStation = await Station.findById(productlist.station.id);
+    populatedStation.total -= quantity;
+    await populatedStation.save();
 
     res.json(productlist);
   } catch (error) {
