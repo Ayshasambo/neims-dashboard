@@ -33,6 +33,10 @@ router.post('/', async (req, res) => {
 
     await newProductlist.save();
 
+    // Update category total
+    populatedCategory.total += quantity;
+    await populatedCategory.save();
+
     res.json(newProductlist);
   } catch (error) {
     console.error(error);
