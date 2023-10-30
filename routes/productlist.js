@@ -169,3 +169,4 @@ module.exports = router;
 
       // Add new product to station
     //populatedStation.productlist.push(newProductlist);
+    //populatedStation.category.total += parseInt(quantity, 10);
