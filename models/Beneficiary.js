@@ -9,6 +9,9 @@ const beneficiarySchema = new mongoose.Schema({
     },
     location:{
         type: String
+    },
+    age:{
+        type: String
     }
 },
 {timestamps:true}

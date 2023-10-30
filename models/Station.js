@@ -28,7 +28,8 @@ const stationSchema = new mongoose.Schema({
        beneficiaries:[{
         id:{type:String},
         gender:{type: String},
-        location:{type: String}
+        location:{type: String},
+        age:{type:String}
        }],
 },
 {timestamps:true}
