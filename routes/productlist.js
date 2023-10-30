@@ -34,12 +34,12 @@ router.post('/', async (req, res) => {
     await newProductlist.save();
 
     // Update category total
-    // populatedCategory.total += parseInt(quantity, 10);
-    //  await populatedCategory.save();
+    populatedCategory.total += parseInt(quantity, 10);
+     await populatedCategory.save();
 
      // Update category in Productlist
-    // newProductlist.category = populatedCategory;
-    //   await newProductlist.save();
+    newProductlist.category = populatedCategory;
+      await newProductlist.save();
 
     // Add new product to station
     populatedStation.productlist.push(newProductlist);
@@ -85,17 +85,17 @@ router.put('/:id/outgoing', async (req, res) => {
     await productlist.save();
 
    // Decrement category total
-   const populatedCategory = await Category.findById(productlist.category.id);
-   populatedCategory.total -= parseInt(quantity, 10);//quantity;
-   await populatedCategory.save();
+  //  const populatedCategory = await Category.findById(productlist.category.id);
+  //  populatedCategory.total -= parseInt(quantity, 10);//quantity;
+  //  await populatedCategory.save();
 
    // Update station total and change property
-   const populatedStation = await Station.findById(productlist.station.id);
-   if (populatedStation) {
-     populatedStation.total -= parseInt(quantity, 10);//quantity;
-     populatedStation.change = 'decrease';
-     await populatedStation.save();
-   }
+  //  const populatedStation = await Station.findById(productlist.station.id);
+  //  if (populatedStation) {
+  //    populatedStation.total -= parseInt(quantity, 10);//quantity;
+  //    populatedStation.change = 'decrease';
+  //    await populatedStation.save();
+  //  }
 
     res.json(productlist);
   } catch (error) {
