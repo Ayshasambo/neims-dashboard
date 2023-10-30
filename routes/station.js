@@ -15,21 +15,13 @@ router.post('/', async (req, res) => {
     const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
     const populatedBeneficiaries = await Promise.all(beneficiaries.map(id => Beneficiary.findById(id)));
     const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
-
-    
     // const stationTotal = populatedProductlist.reduce((acc, product) => {
     //   return acc + parseInt(product.quantity, 10);
     // }, 0);
-
-    
-    
-
     if (!populatedProductlist || !populatedBeneficiaries || !populatedCategory) {
       return res.status(404).json({ error: 'One or more items not found' });
     }
     
-   
-
     const newStation = new Station({
       name,
       type,
@@ -41,6 +33,9 @@ router.post('/', async (req, res) => {
     });
 
     await newStation.save();
+    // Update category total
+    populatedCategory.total += parseInt(quantity, 10);
+     await populatedCategory.save();
 
     res.json(newStation);
   } catch (error) {
