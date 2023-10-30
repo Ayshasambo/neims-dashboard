@@ -22,7 +22,12 @@ const stationSchema = new mongoose.Schema({
         id:{type: String},
         name: {type: String},
         quantity:{type:Number},
-        tag:{type:String}
+        tag:{type:String},
+        category: {
+              id: { type: String },
+              name: { type: String },
+              total: { type: Number }
+            }
         
        }],
        beneficiaries:[{
