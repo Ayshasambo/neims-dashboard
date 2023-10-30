@@ -11,7 +11,7 @@ const beneficiarySchema = new mongoose.Schema({
         type: String
     },
     age:{
-        type: String
+        type: Number
     }
 },
 {timestamps:true}
