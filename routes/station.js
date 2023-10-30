@@ -89,8 +89,8 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
       const updatedStation = await Station.findByIdAndUpdate(
-        { $set},
-        { new: true }
+        {_id: req.params.id}, 
+        {$set: req.body}
       );
       res.json(updatedStation);
     }
