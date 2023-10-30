@@ -39,7 +39,7 @@ router.get('/:id', async (req, res) => {
 });
 
  //UPDATE beneficiary
- router.patch('/:id', async (req, res) =>{
+ router.put('/:id', async (req, res) =>{
     try{
       const updateBeneficiary = await Beneficiary.updateOne(
         {_id: req.params.id}, 
