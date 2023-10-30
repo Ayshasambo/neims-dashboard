@@ -37,18 +37,18 @@ router.post('/', async (req, res) => {
     populatedCategory.total += parseInt(quantity, 10);
      await populatedCategory.save();
 
-     // Update category in Productlist
-    newProductlist.category = populatedCategory;
-      await newProductlist.save();
-
-    // Add new product to station
-    populatedStation.productlist.push(newProductlist);
+     // Add new product to station
+    populatedStation.productlist.push({
+      id: newProductlist._id,
+      name,
+      quantity,
+      tag,
+      category: populatedCategory 
+    });
     
     // Update station's total
     populatedStation.total += parseInt(quantity, 10);
     await populatedStation.save();
-
-    
 
 
     res.json(newProductlist);
@@ -163,3 +163,9 @@ module.exports = router;
 
 
 
+// Update category in Productlist
+    //newProductlist.category = populatedCategory;
+      //await newProductlist.save();
+
+      // Add new product to station
+    //populatedStation.productlist.push(newProductlist);
