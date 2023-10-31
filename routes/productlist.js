@@ -158,11 +158,6 @@ router.put('/:id', async (req, res) =>{
 module.exports = router;
 
 
-
-
-
-
-
 // Update category in Productlist
     //newProductlist.category = populatedCategory;
       //await newProductlist.save();
