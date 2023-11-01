@@ -4,41 +4,34 @@ const Station = require('../models/Station.js');
 const Productlist = require('../models/Productlist.js');
 const Beneficiary = require('../models/Beneficiary.js');
 const Category = require('../models/Category.js');
-
+const mongoose = require('mongoose')
 
 //Create a station
 router.post('/', async (req, res) => {
   console.log('Request Body:', req.body);
-  const { name, type, total, category, change, productlist, beneficiaries } = req.body;
+  const { name, type, total, category, change, productlist, areaofcoverage,beneficiaries } = req.body;
 
   try {
     const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
-    const populatedBeneficiaries = await Promise.all(beneficiaries.map(id => Beneficiary.findById(id)));
-    const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
-    // const stationTotal = populatedProductlist.reduce((acc, product) => {
-    //   return acc + parseInt(product.quantity, 10);
-    // }, 0);
-    if (!populatedProductlist || !populatedBeneficiaries || !populatedCategory) {
+    //const populatedBeneficiaries = await Beneficiary.findById(beneficiaries)
+     const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
+    if (!populatedProductlist) {
       return res.status(404).json({ error: 'One or more items not found' });
-    }
-    
+     }
+
     const newStation = new Station({
       name,
       type,
       total,
-      category:populatedCategory,
+      category:populatedCategory , 
       change,
       productlist:populatedProductlist,
-      beneficiaries:populatedBeneficiaries,
+      areaofcoverage,
+      beneficiaries,
     });
-
+   
     await newStation.save();
-    // Calculate category totals
-    const categoryTotals = {};
-    populatedProductlist.forEach(product => {
-      const categoryId = product.category.toString(); // Convert category ID to string
-      categoryTotals[categoryId] = (categoryTotals[categoryId] || 0) + parseInt(product.quantity);
-    });
+    
     res.json(newStation);
   } catch (error) {
     console.error(error);
@@ -114,3 +107,25 @@ router.put('/:id', async (req, res) => {
     //   const total = categoryTotals[categoryId];
     //   await Category.findByIdAndUpdate(categoryId, { $inc: { total } });
     // }));
+
+    // "category": [
+    //   {
+    //     "category": "653e5e1176ba6f62027a006a",
+    //     "total": 0
+    //   },
+    //   {
+    //     "category": "653e5e2c76ba6f62027a006c",
+    //     "total": 0
+    //   },
+    //   {
+    //     "category": "653e5e5376ba6f62027a006e",
+    //     "total": 0
+    //   },
+    //   {
+    //     "category": "653e5e7576ba6f62027a0070",
+    //     "total": 0
+    //   },
+    //   {
+    //     "category": "653e5e9476ba6f62027a0072",
+    //     "total": 0
+    //   }],

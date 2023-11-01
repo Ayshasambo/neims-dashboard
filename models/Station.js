@@ -10,10 +10,20 @@ const stationSchema = new mongoose.Schema({
        total:{
         type: Number
        },
-       category:[{
-        id: {type: String},
-        name:{type: String},
-        total:{type: Number}   
+       category: [{
+              id: {
+                type: String
+              },
+              name: {
+                type: String
+              },
+              color: {
+                type: String
+              },
+              total: {
+                type: Number,
+                default: 0
+              }
        }],
        change:{
         type : String
@@ -21,22 +31,20 @@ const stationSchema = new mongoose.Schema({
        productlist:[{
         id:{type: String},
         name: {type: String},
-        quantity:{type:Number},
-        tag:{type:String},
-        category: {
-              id: { type: String },
-              name: { type: String },
-              total: { type: Number }
-            }
-        
+        quantity:{type:String},
+        tag:{type:String}   
        }],
-       beneficiaries:[{
-        id:{type:String},
-        name:{type:String},
-        gender:{type: String},
-        location:{type: String},
-        age:{type:Number}
+
+       areaofcoverage:[{
+         type: String
        }],
+
+       beneficiaries:{
+        men:{type:Number, deault:0},
+        women:{type:Number, default:0},
+        children:{type:Number, default:0}
+       },
+
 },
 {timestamps:true}
 );

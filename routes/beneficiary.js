@@ -1,19 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const Beneficiary = require('../models/Beneficiary');
+const Station = require('../models/Station')
+const mongoose = require('mongoose');
+
 
 // CREATE a new beneficiary
 router.post('/', async (req, res) => {
-    try {
-      const { name, gender, location } = req.body;
-      const beneficiary = new Beneficiary({ name, gender, location });
-    
-      const newBeneficiary = await beneficiary.save();
-      res.status(201).json(newBeneficiary);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  });
+  const { name, individual, station, location, age } = req.body;
+
+  try {
+    // Find the populated station
+    const populatedStation = await Station.findById(station);
+
+    // Create a new beneficiary
+    const newBeneficiary = await Beneficiary({
+      name,
+      individual,
+      station: {
+        id: populatedStation._id.toString(), // Store station ID as string
+        name: populatedStation.name, // Store station name
+      },
+      //station: populatedStation.name,
+      location,
+      age,
+    });
+
+    await newBeneficiary.save();
+
+    // Update the station's beneficiary counts
+    if (individual === 'male') {
+      populatedStation.beneficiaries.men += 1; // Assuming men is the first element in the array
+    } else if(individual === 'female') {
+      populatedStation.beneficiaries.women += 1;// Assuming women is the second element in the array
+    } else if (individual === 'child') {
+      populatedStation.beneficiaries.children += 1; // Assuming children is the third element in the array
+     }
+    await populatedStation.save();
+
+    res.json(newBeneficiary);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 
   // GET all beneficiaries
 router.get('/', async (req, res) => {
