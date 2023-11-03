@@ -132,33 +132,9 @@ router.get('/station/:stationId', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router
 
 
-
-
-
-// Assuming you have a route for incoming products
-// router.get('/station/:stationId', async (req, res) => {
-//   const stationId = req.params.stationId;
-//     console.log('stationId:', stationId)
-//   try {
-//     // Find all products associated with the specified station
-//     const products = await Productlist.find({ station: stationId });
-//     console.log('products:', products)
-//     if (!products) {
-//       return res.status(404).json({ error: 'No products found for the specified station' });
-//     }
-
-//     res.json(products);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
-module.exports = router;
 
 
 
