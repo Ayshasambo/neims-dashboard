@@ -36,6 +36,9 @@ router.post('/', async (req, res) => {
 
      // Add new product to station
        populatedStation.productlist.push(newProductlist);
+      
+    // Update the station change property
+    populatedStation.change = 'increase';
 
     // Update the category total
     populatedCategory.total += 1;
@@ -43,7 +46,6 @@ router.post('/', async (req, res) => {
 
     // Update the category total in the station
     const stationCategory = populatedStation.category.find(cat => cat._id && cat._id.equals(populatedCategory._id));
-    console.log('stationCategory:', stationCategory);
     if (stationCategory) {
       stationCategory.total += 1;
     } else {

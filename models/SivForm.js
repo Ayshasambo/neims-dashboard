@@ -21,6 +21,9 @@ const sivFormSchema = new mongoose.Schema({
   goingto:{
     type:String
   },
+  lga:{
+    type:String
+  },
   station:{
      id: {type: String},
      name: {type: String}

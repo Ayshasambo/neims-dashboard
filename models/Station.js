@@ -31,7 +31,7 @@ const stationSchema = new mongoose.Schema({
        productlist:[{
         id:{type: String},
         name: {type: String},
-        quantity:{type:String},
+        quantity:{type:Number},
         tag:{type:String}   
        }],
 
