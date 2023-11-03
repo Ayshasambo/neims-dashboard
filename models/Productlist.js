@@ -11,12 +11,22 @@ const productlistSchema = new mongoose.Schema({
     type:String
   },
   station:{
-     id: {type: String},
-     name: {type: String}
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Station'
+    },
+    name: {
+      type: String
+    }
   },
   category:{
-    id:{type:String},
-    name: {type: String},
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category'
+    },
+    name: {
+      type: String
+    }
   },
   tag:{
     type: String,

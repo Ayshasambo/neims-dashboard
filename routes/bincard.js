@@ -14,9 +14,13 @@ router.post('/', async (req, res) => {
       }
   
       const newBincard = new Bincard({
-       productlist: populatedProductlist,
+       productlist:{
+        id:populatedProductlist._id,
+        name:populatedProductlist.name
+       },
+       movement,
        quantity,
-       reason
+       Balance
       });
   
       await newBincard.save();

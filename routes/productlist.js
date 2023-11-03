@@ -5,6 +5,7 @@ const Bincard = require('../models/Bincard');
 const Category = require('../models/Category');
 const User = require('../models/User');
 const Station = require('../models/Station');
+const mongoose = require('mongoose')
 
 
 // create the products
@@ -16,17 +17,18 @@ router.post('/', async (req, res) => {
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
-    console.log('category:', category);
-    console.log('station:', station);
-    console.log('populatedCategory:', populatedCategory);
-    console.log('populatedStation:', populatedStation);
-
     const newProductlist = new Productlist({
       name,
       quantity,
       srvnumber,
-      station: populatedStation,
-      category: populatedCategory,
+      station: {
+        id: populatedStation._id,
+        name: populatedStation.name
+      },
+      category: {
+        id: populatedCategory._id,
+        name: populatedCategory.name
+      },
       tag,
       storeofficer: populatedStoreofficer,
       verificationofficer: populatedVerificationofficer
@@ -118,6 +120,43 @@ router.put('/:id', async (req, res) =>{
     res.json({message:'product not updated'}) 
   }
 });
+
+// GET products based on station
+router.get('/station/:stationId', async (req, res) => {
+  try {
+    const products = await Productlist.find({ 'station.id': req.params.stationId });
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+module.exports = router;
+
+
+
+
+
+// Assuming you have a route for incoming products
+// router.get('/station/:stationId', async (req, res) => {
+//   const stationId = req.params.stationId;
+//     console.log('stationId:', stationId)
+//   try {
+//     // Find all products associated with the specified station
+//     const products = await Productlist.find({ station: stationId });
+//     console.log('products:', products)
+//     if (!products) {
+//       return res.status(404).json({ error: 'No products found for the specified station' });
+//     }
+
+//     res.json(products);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
 
 module.exports = router;
 
