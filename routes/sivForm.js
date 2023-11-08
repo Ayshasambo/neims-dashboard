@@ -1,30 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const SivForm = require('../models/SivForm');
-//const Bincard = require('../models/Bincard');
-const Productlist = require('../models/Productlist');
+const Bincard = require('../models/Bincard');
+const Product = require('../models/Product');
 const Category = require('../models/Category');
 const User = require('../models/User');
 const Station = require('../models/Station');
+const mongoose = require('mongoose')
 
 
 
 
 // create the products
 router.post('/', async (req, res) => {
-  const { name, quantity, station, sivnumber, productlist, goingto, lga, category, tag, storeofficer, } = req.body;
+  const { name, quantity, station, sivnumber, product, goingto, lga, category, tag, storeofficer, } = req.body;
   try {
     const populatedCategory = await Category.findById(category);
     const populatedStation = await Station.findById(station)
-    const populatedProductlist = await Productlist.findById(productlist);
+    const populatedProduct = await Product.findById(product);
     const populatedStoreofficer = await User.findById(storeofficer);
+
+   console.log('populatedProduct:', populatedProduct)
 
     const newSivForm = new SivForm({
       name,
       quantity,
       sivnumber,
       station: populatedStation,
-      productlist:populatedProductlist,
+      product:populatedProduct,
       goingto,
       lga,
       category: populatedCategory,
@@ -34,15 +37,20 @@ router.post('/', async (req, res) => {
 
     await newSivForm.save();
 
+    // Update product quantity
+    populatedProduct.quantity -= quantity;
+    populatedProduct.tag = "distributed";
+    await populatedProduct.save();
+
     // Update stations product
-    const stationProduct = populatedStation.productlist.find(prod => prod._id.toString() === productlist);
+    const stationProduct = populatedStation.product.find(prod => prod._id.toString() === product);
     if (!stationProduct || stationProduct.quantity < quantity) {
       return res.status(400).json({ error: 'Insufficient quantity in the station' });
     }
 
     if (stationProduct) {
       stationProduct.quantity -= quantity;
-      stationProduct.tag = 'outgoing'; 
+      stationProduct.tag = 'distributed'; 
 
       // If items quantity is 0, decrement category total
       if (stationProduct.quantity === 0) {
@@ -50,25 +58,28 @@ router.post('/', async (req, res) => {
         const stationCategory = populatedStation.category.find(cat => cat._id.toString() === stationCategoryId);
 
        if (stationCategory) {
-         console.log('Previous category total:', stationCategory.total);
          stationCategory.total -= 1;
-         console.log('Updated category total:', stationCategory.total);
         }
-
-       // Update station total based on category totals
-       let stationTotal = 0;
-       for (const cat of populatedStation.category) {
-         stationTotal += cat.total;
-        }
-       populatedStation.total = stationTotal;
-
         await populatedStation.save();
       }    
     }
 
     populatedStation.change = 'decrease'; 
+    populatedStation.total -= quantity;   
     await populatedStation.save();
+    
+    // const newBincard = new Bincard({
+    //   //productlist: newSivForm._id,
+    //   sivnumber: newSivForm.sivnumber,
+    //   //movement: destination, 
+    //   quantity: newSivForm.quantity,
+    //   balance: populatedProductlist.quantity,
+    //   //storeofficer: newProductlist.storeofficer 
+    // });
+    // console.log('newBincard:', newBincard)
+    // await newBincard.save();
 
+    
     res.json(newSivForm);
   } catch (error) {
     console.error(error);

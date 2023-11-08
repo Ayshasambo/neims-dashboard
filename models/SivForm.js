@@ -14,10 +14,10 @@ const sivFormSchema = new mongoose.Schema({
   sivnumber:{
     type:String
   },
-  productlist:{
-   id:{type:String} 
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: ' Product'
   },
-
   goingto:{
     type:String
   },

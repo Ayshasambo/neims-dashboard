@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Productlist = require('../models/Productlist');
+const Product = require('../models/Product');
 const Bincard = require('../models/Bincard');
 const Category = require('../models/Category');
 const User = require('../models/User');
@@ -10,14 +10,15 @@ const mongoose = require('mongoose')
 
 // create the products
 router.post('/', async (req, res) => {
-  const { name, quantity, station, srvnumber,  category, tag, storeofficer, verificationofficer } = req.body;
+  const { name, quantity, station, srvnumber,  category, tag, bincard, storeofficer, verificationofficer } = req.body;
   try {
     const populatedCategory = await Category.findById(category);
     const populatedStation = await Station.findById(station);
+    const populatedBincard = await Bincard.findById(bincard);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
-    const newProductlist = new Productlist({
+    const newProduct = new Product({
       name,
       quantity,
       srvnumber,
@@ -30,17 +31,22 @@ router.post('/', async (req, res) => {
         name: populatedCategory.name
       },
       tag,
+      // bincard:[{
+      //   id: populatedBincard._id,
+      // }],
       storeofficer: populatedStoreofficer,
       verificationofficer: populatedVerificationofficer
     });
 
-    await newProductlist.save();
+    await newProduct.save();
 
      // Add new product to station
-       populatedStation.productlist.push(newProductlist);
+       populatedStation.product.push(newProduct);
       
     // Update the station change property
     populatedStation.change = 'increase';
+
+    const stationTotal = populatedStation.total
 
     // Update the category total
     populatedCategory.total += 1;
@@ -54,17 +60,32 @@ router.post('/', async (req, res) => {
       populatedStation.category.push({ category: populatedCategory._id, total: 1 });
     }
 
-    // Calculate and update the station total
-    let stationTotal = 0;
-    for (const cat of populatedStation.category) {
-      stationTotal += cat.total;
-    }
-    populatedStation.total = stationTotal;
+   // Calculate total quantity of products in the station
+const totalQuantity = populatedStation.product.reduce((total, product) => {
+  return total + product.quantity;
+}, 0);
 
-    // Save the updated station
-    await populatedStation.save();
+// Update the station total
+populatedStation.total = totalQuantity;
 
-    res.json(newProductlist);
+// Save the updated station
+await populatedStation.save();
+
+    // Create bincard
+    const newBincard = new Bincard({
+      product:newProduct._id,
+      srvnumber: newProduct.srvnumber,
+      movement: 'restock', 
+      quantity: newProduct.quantity,
+      balance: newProduct.quantity,
+      storeofficer: newProduct.storeofficer,
+      timestamp: Date.now()
+    });
+    newProduct.bincard.push(newBincard);
+    console.log('newBincard:', newBincard)
+    await newBincard.save();
+
+    res.json({ product: newProduct, bincard: newBincard });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -74,7 +95,7 @@ router.post('/', async (req, res) => {
 // GET all products
 router.get('/', async (req, res) => {
   try {
-    const products = await Productlist.find().sort({createdAt:-1});
+    const products = await Product.find().sort({createdAt:-1});
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -84,7 +105,7 @@ router.get('/', async (req, res) => {
 // GET a single product
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Productlist.findById(req.params.id);
+    const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -97,7 +118,7 @@ router.get('/:id', async (req, res) => {
 // DELETE a product
 router.delete('/:id', async (req, res) => {
   try {
-    const deletedProduct = await Productlist.findByIdAndDelete(req.params.id);
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -110,7 +131,7 @@ router.delete('/:id', async (req, res) => {
 // UPDATE a product
 router.put('/:id', async (req, res) =>{
   try{
-    const updateProductlist = await Productlist.updateOne(
+    const updateProduct = await Product.updateOne(
       {_id: req.params.id}, 
       {$set: req.body}
     );
@@ -124,7 +145,7 @@ router.put('/:id', async (req, res) =>{
 // GET products based on station
 router.get('/station/:stationId', async (req, res) => {
   try {
-    const products = await Productlist.find({ 'station.id': req.params.stationId });
+    const products = await Product.find({ 'station.id': req.params.stationId });
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -132,10 +153,21 @@ router.get('/station/:stationId', async (req, res) => {
   }
 });
 
+//Get products based on catgories
+router.get('/category/:categoryId', async (req, res) => {
+  try {
+    const products = await Product.find({ 'category.id': req.params.categoryId });
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 module.exports = router
 
 
 
-
-
+ 
 

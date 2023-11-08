@@ -17,11 +17,10 @@ router.post('/', async (req, res) => {
     const newBeneficiary = await Beneficiary({
       name,
       individual,
-      station: {
-        id: populatedStation._id.toString(), // Store station ID as string
-        name: populatedStation.name, // Store station name
+      station:{
+       id: populatedStation._id,
+       name:populatedStation.name
       },
-      //station: populatedStation.name,
       location,
       age,
     });
@@ -30,11 +29,11 @@ router.post('/', async (req, res) => {
 
     // Update the station's beneficiary counts
     if (individual === 'male') {
-      populatedStation.beneficiaries.men += 1; // Assuming men is the first element in the array
+      populatedStation.beneficiaries.men += 1; 
     } else if(individual === 'female') {
-      populatedStation.beneficiaries.women += 1;// Assuming women is the second element in the array
+      populatedStation.beneficiaries.women += 1;
     } else if (individual === 'child') {
-      populatedStation.beneficiaries.children += 1; // Assuming children is the third element in the array
+      populatedStation.beneficiaries.children += 1; 
      }
     await populatedStation.save();
 

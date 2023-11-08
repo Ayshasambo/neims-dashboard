@@ -1,20 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const Station = require('../models/Station.js');
-const Productlist = require('../models/Productlist.js');
+const Product = require('../models/Product.js');
 const Beneficiary = require('../models/Beneficiary.js');
 const Category = require('../models/Category.js');
 
 
 //Create a station
 router.post('/', async (req, res) => {
-  console.log('Request Body:', req.body);
-  const { name, type, total, category, change, productlist, areaofcoverage,beneficiaries } = req.body;
+  const { name, type, total, category, change, product, areaofcoverage,beneficiaries } = req.body;
 
   try {
-    const populatedProductlist = await Promise.all(productlist.map(id => Productlist.findById(id)));
+    const populatedProduct = await Promise.all(product.map(id => Product.findById(id)));
      const populatedCategory = await Promise.all(category.map(id => Category.findById(id)));
-    if (!populatedProductlist) {
+    if (!populatedProduct) {
       return res.status(404).json({ error: 'One or more items not found' });
      }
 
@@ -24,7 +23,7 @@ router.post('/', async (req, res) => {
       total,
       category:populatedCategory , 
       change,
-      productlist:populatedProductlist,
+      product:populatedProduct,
       areaofcoverage,
       beneficiaries,
     });

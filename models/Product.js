@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const productlistSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
   name: {
     type: String,
   },
@@ -11,14 +11,15 @@ const productlistSchema = new mongoose.Schema({
     type:String
   },
   station:{
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Station'
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Station'
+      },
+      name: {
+        type: String
+      }
     },
-    name: {
-      type: String
-    }
-  },
+ 
   category:{
     id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,9 +39,13 @@ const productlistSchema = new mongoose.Schema({
   verificationofficer:{
     id:{type:String},
     name:{type: String}
-  }
+  },
+  bincard:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Bincard'
+  }]
 },
 {timestamps:true}
 );
 
-module.exports = mongoose.model("Productlist", productlistSchema);
+module.exports = mongoose.model("Product", productSchema);
