@@ -46,17 +46,23 @@ router.post('/', async (req, res) => {
   }
 });
 
-
-//Get all staions
+// Get all stations or filter by 'type'
 router.get('/', async (req, res) => {
-    try{
-     const station = await Station.find().sort({createdAt:-1});;
-      res.json(station);
-   }
-   catch(err){
-      res.json({message: err});
-   }
+  try {
+      const query = {};
+      
+      // Check if 'type' query parameter is provided
+      if (req.query.type) {
+          query.type = req.query.type; // Add type filter to the query
+      }
+      
+      const stations = await Station.find(query).sort({ createdAt: -1 });
+      res.json(stations);
+  } catch (err) {
+      res.status(500).json({ message: err });
+  }
 });
+
 
 //Get a station
 router.get('/:id', async (req, res) => {
