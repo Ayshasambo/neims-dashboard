@@ -50,36 +50,18 @@ router.post('/', async (req, res) => {
       return total + product.quantity;
     }, 0);
     // Update the station total
-     populatedStation.total = totalQuantity;
+    populatedStation.total = totalQuantity;
 
      //update the station category total
-  //    const categoryString = populatedCategory._id.toString();
-  //    const stationCategory = populatedStation.category.find(cat => cat.id && cat.id.toString() === categoryString);
-  //     console.log('populatedCategory._id:', populatedCategory._id);
-  //     console.log('categoryString:', categoryString);
-  //     console.log('stationCategory:', stationCategory);
-  //     console.log('populatedStation.category:', populatedStation.category);
-  //     console.log('newProduct.category:', newProduct.category);
-  //     console.log('populatedCategory:', populatedCategory);
-
-
-  //     if (stationCategory) {
-  // stationCategory.total += quantity;
-  //       } else {
-  //       console.error('Category not found in station.');
-  //     }
-
-
-  const categoryString = populatedCategory._id.toString();
-  const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
-  
-  if (stationCategory) {
-    stationCategory.total += quantity;
-    console.log('typeof quantity:', typeof quantity);
-    console.log('typeof stationCategory.total:', typeof stationCategory.total);
-  } else {
-    console.error('Category not found in station.');
-  }
+        const categoryString = populatedCategory._id.toString();
+        const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
+         if (stationCategory) {
+        stationCategory.total += quantity;
+       //console.log('typeof quantity:', typeof quantity);
+       //console.log('typeof stationCategory.total:', typeof stationCategory.total);
+      } else {
+      console.error('Category not found in station.');
+     }
     // Save the updated station
     await populatedStation.save();
 
