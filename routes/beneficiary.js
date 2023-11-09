@@ -13,29 +13,32 @@ router.post('/', async (req, res) => {
     // Find the populated station
     const populatedStation = await Station.findById(station);
 
+    if (!populatedStation) {
+      return res.status(404).json({ error: 'Station not found' });
+    }
+
     // Create a new beneficiary
     const newBeneficiary = await Beneficiary({
       name,
       individual,
-      station:{
-       id: populatedStation._id,
-       name:populatedStation.name
-      },
+      station:populatedStation._id,
       location,
       age,
     });
 
-    await newBeneficiary.save();
-
-    // Update the station's beneficiary counts
-    if (individual === 'male') {
-      populatedStation.beneficiaries.men += 1; 
+     // Update the station's beneficiary counts
+     if (individual === 'male') {
+      populatedStation.beneficiary.men += 1; 
     } else if(individual === 'female') {
-      populatedStation.beneficiaries.women += 1;
+      populatedStation.beneficiary.women += 1;
     } else if (individual === 'child') {
-      populatedStation.beneficiaries.children += 1; 
-     }
+      populatedStation.beneficiary.children += 1; 
+    }
+
+    // await Promise.all([populatedStation.save(), newBeneficiary.save()]); // Save both the station and beneficiary
+
     await populatedStation.save();
+    await newBeneficiary.save();
 
     res.json(newBeneficiary);
   } catch (error) {
@@ -95,3 +98,25 @@ router.delete('/:id', async (req, res) => {
 });
   
 module.exports = router;
+
+// station:{
+      //  id: populatedStation._id,
+      //  name:populatedStation.name
+      // },
+ // Update the station's beneficiary counts
+// if (individual === 'male') {
+//   await Station.findByIdAndUpdate(
+//     populatedStation._id,
+//     { $inc: { 'beneficiary.men': 1 } }
+//   );
+// } else if (individual === 'female') {
+//   await Station.findByIdAndUpdate(
+//     populatedStation._id,
+//     { $inc: { 'beneficiary.women': 1 } }
+//   );
+// } else if (individual === 'child') {
+//   await Station.findByIdAndUpdate(
+//     populatedStation._id,
+//     { $inc: { 'beneficiary.children': 1 } }
+//   );
+// }

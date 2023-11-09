@@ -8,10 +8,9 @@ const beneficiarySchema = new mongoose.Schema({
         type: String
     },
     station:{
-     id:{type:String},
-     name:{type:String} 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Station'
     },
-    
     location:{
         type: String
     },

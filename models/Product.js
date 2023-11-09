@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
   bincard:[{
     type: mongoose.Schema.Types.ObjectId,
     ref:'Bincard'
-  }]
+  }],
 },
 {timestamps:true}
 );

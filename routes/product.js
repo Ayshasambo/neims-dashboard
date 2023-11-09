@@ -31,9 +31,8 @@ router.post('/', async (req, res) => {
         name: populatedCategory.name
       },
       tag,
-      // bincard:[{
-      //   id: populatedBincard._id,
-      // }],
+      // bincard: {
+      //   id:populatedBincard._id},
       storeofficer: populatedStoreofficer,
       verificationofficer: populatedVerificationofficer
     });
@@ -46,30 +45,26 @@ router.post('/', async (req, res) => {
     // Update the station change property
     populatedStation.change = 'increase';
 
-    const stationTotal = populatedStation.total
-
-    // Update the category total
-    populatedCategory.total += 1;
-    await populatedCategory.save();
-
-    // Update the category total in the station
-    const stationCategory = populatedStation.category.find(cat => cat._id && cat._id.equals(populatedCategory._id));
-    if (stationCategory) {
-      stationCategory.total += 1;
-    } else {
-      populatedStation.category.push({ category: populatedCategory._id, total: 1 });
-    }
+     //const stationTotal = populatedStation.total
 
    // Calculate total quantity of products in the station
-const totalQuantity = populatedStation.product.reduce((total, product) => {
-  return total + product.quantity;
-}, 0);
+    const totalQuantity = populatedStation.product.reduce((total, product) => {
+      return total + product.quantity;
+    }, 0);
+    // Update the station total
+    populatedStation.total = totalQuantity;
+    
+    const stationCategory = populatedStation.category.find(cat => cat.id && cat.id.toString() === populatedCategory._id.toString());
 
-// Update the station total
-populatedStation.total = totalQuantity;
+if (stationCategory) {
+  stationCategory.total += quantity;
+} else {
+  populatedStation.category.push({ id: populatedCategory._id, name: populatedCategory.name, total: quantity });
+}
+ 
 
-// Save the updated station
-await populatedStation.save();
+    // Save the updated station
+    await populatedStation.save();
 
     // Create bincard
     const newBincard = new Bincard({
@@ -143,15 +138,15 @@ router.put('/:id', async (req, res) =>{
 });
 
 // GET products based on station
-router.get('/station/:stationId', async (req, res) => {
-  try {
-    const products = await Product.find({ 'station.id': req.params.stationId });
-    res.json(products);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+// router.get('/station/:stationId', async (req, res) => {
+//   try {
+//     const products = await Product.find({ 'station.id': req.params.stationId });
+//     res.json(products);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 //Get products based on catgories
 router.get('/category/:categoryId', async (req, res) => {
@@ -171,3 +166,30 @@ module.exports = router
 
  
 
+// Calculate total quantity for this category
+    //  const categoryTotalQuantity = populatedCategory.product.reduce((total, product) => total + product.quantity, 0);
+
+    //  // Update the category total
+    //  populatedCategory.total = categoryTotalQuantity;
+    //  await populatedCategory.save();
+ 
+    //  // Update the category total in the station
+    //  const stationCategory = populatedStation.category.find(cat => cat._id && cat._id.equals(populatedCategory._id));
+    //  if (stationCategory) {
+    //    stationCategory.total = categoryTotalQuantity;
+    //  } else {
+    //    populatedStation.category.push({ category: populatedCategory._id, total: categoryTotalQuantity });
+    //  }
+
+
+    // Update the category total
+    // populatedCategory.total += 1;
+    // await populatedCategory.save();
+
+    // // Update the category total in the station
+    // const stationCategory = populatedStation.category.find(cat => cat._id && cat._id.equals(populatedCategory._id));
+    // if (stationCategory) {
+    //   stationCategory.total += 1;
+    // } else {
+    //   populatedStation.category.push({ category: populatedCategory._id, total: 1 });
+    // }

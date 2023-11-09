@@ -32,19 +32,31 @@ const stationSchema = new mongoose.Schema({
         id:{type: String},
         name: {type: String},
         quantity:{type:Number},
-        tag:{type:String}   
+        tag:{type:String},
+        createdAt: {
+          type: Date,
+          default: Date.now
+        }
        }],
 
        areaofcoverage:[{
          type: String
        }],
 
-       beneficiaries:{
-        men:{type:Number, deault:0},
-        women:{type:Number, default:0},
-        children:{type:Number, default:0}
-       },
-
+       beneficiary: {
+        men: {
+          type: Number,
+          default: 0
+        },
+        women: {
+          type: Number,
+          default: 0
+        },
+        children: {
+          type: Number,
+          default: 0
+        }, 
+      }
 },
 {timestamps:true}
 );
