@@ -45,24 +45,41 @@ router.post('/', async (req, res) => {
     // Update the station change property
     populatedStation.change = 'increase';
 
-     //const stationTotal = populatedStation.total
-
    // Calculate total quantity of products in the station
     const totalQuantity = populatedStation.product.reduce((total, product) => {
       return total + product.quantity;
     }, 0);
     // Update the station total
-    populatedStation.total = totalQuantity;
-    
-    const stationCategory = populatedStation.category.find(cat => cat.id && cat.id.toString() === populatedCategory._id.toString());
+     populatedStation.total = totalQuantity;
 
-if (stationCategory) {
-  stationCategory.total += quantity;
-} else {
-  populatedStation.category.push({ id: populatedCategory._id, name: populatedCategory.name, total: quantity });
-}
- 
+     //update the station category total
+  //    const categoryString = populatedCategory._id.toString();
+  //    const stationCategory = populatedStation.category.find(cat => cat.id && cat.id.toString() === categoryString);
+  //     console.log('populatedCategory._id:', populatedCategory._id);
+  //     console.log('categoryString:', categoryString);
+  //     console.log('stationCategory:', stationCategory);
+  //     console.log('populatedStation.category:', populatedStation.category);
+  //     console.log('newProduct.category:', newProduct.category);
+  //     console.log('populatedCategory:', populatedCategory);
 
+
+  //     if (stationCategory) {
+  // stationCategory.total += quantity;
+  //       } else {
+  //       console.error('Category not found in station.');
+  //     }
+
+
+  const categoryString = populatedCategory._id.toString();
+  const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
+  
+  if (stationCategory) {
+    stationCategory.total += quantity;
+    console.log('typeof quantity:', typeof quantity);
+    console.log('typeof stationCategory.total:', typeof stationCategory.total);
+  } else {
+    console.error('Category not found in station.');
+  }
     // Save the updated station
     await populatedStation.save();
 
@@ -84,16 +101,6 @@ if (stationCategory) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// GET all products
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find().sort({createdAt:-1});
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 });
 
@@ -137,6 +144,30 @@ router.put('/:id', async (req, res) =>{
   }
 });
 
+// GET all products
+router.get('/', async (req, res) => {
+  try {
+    const query = {};
+
+    // Check if 'category' query parameter is provided
+    if (req.query.category) {
+      query['category.name'] = req.query.category;
+    }
+
+    // Check if 'station' query parameter is provided
+    if (req.query.station) {
+      query['station.name'] = req.query.station;
+    }
+
+    // Add more parameters as needed
+
+    const products = await Product.find(query).sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // GET products based on station
 // router.get('/station/:stationId', async (req, res) => {
 //   try {
@@ -149,15 +180,25 @@ router.put('/:id', async (req, res) =>{
 // });
 
 //Get products based on catgories
-router.get('/category/:categoryId', async (req, res) => {
-  try {
-    const products = await Product.find({ 'category.id': req.params.categoryId });
-    res.json(products);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+// router.get('/category/:categoryId', async (req, res) => {
+//   try {
+//     const products = await Product.find({ 'category.id': req.params.categoryId });
+//     res.json(products);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+// GET all products
+// router.get('/', async (req, res) => {
+//   try {
+//     const products = await Product.find().sort({createdAt:-1});
+//     res.json(products);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 
 module.exports = router
@@ -166,30 +207,3 @@ module.exports = router
 
  
 
-// Calculate total quantity for this category
-    //  const categoryTotalQuantity = populatedCategory.product.reduce((total, product) => total + product.quantity, 0);
-
-    //  // Update the category total
-    //  populatedCategory.total = categoryTotalQuantity;
-    //  await populatedCategory.save();
- 
-    //  // Update the category total in the station
-    //  const stationCategory = populatedStation.category.find(cat => cat._id && cat._id.equals(populatedCategory._id));
-    //  if (stationCategory) {
-    //    stationCategory.total = categoryTotalQuantity;
-    //  } else {
-    //    populatedStation.category.push({ category: populatedCategory._id, total: categoryTotalQuantity });
-    //  }
-
-
-    // Update the category total
-    // populatedCategory.total += 1;
-    // await populatedCategory.save();
-
-    // // Update the category total in the station
-    // const stationCategory = populatedStation.category.find(cat => cat._id && cat._id.equals(populatedCategory._id));
-    // if (stationCategory) {
-    //   stationCategory.total += 1;
-    // } else {
-    //   populatedStation.category.push({ category: populatedCategory._id, total: 1 });
-    // }

@@ -28,21 +28,7 @@ router.post('/', async (req, res) => {
     });
     
 
-    if (Array.isArray(populatedStation.category)) {
-      populatedProduct.forEach(product => {
-        if (product.category && product.category.id) {
-          populatedStation.category.forEach(category => {
-            if (category.id.toString() === product.category.id.toString()) {
-              category.total += product.quantity;
-            }
-          });
-        }
-      });
-      await populatedStation.save();
-    } else {
-      console.error('populatedStation.category is not an array');
-    }
-
+   
 
    
     await newStation.save();
@@ -56,15 +42,15 @@ router.post('/', async (req, res) => {
 
 
 //Get all staions
-router.get('/', async (req, res) => {
-    try{
-     const station = await Station.find().sort({createdAt:-1});;
-      res.json(station);
-   }
-   catch(err){
-      res.json({message: err});
-   }
-});
+// router.get('/', async (req, res) => {
+//     try{
+//      const station = await Station.find().sort({createdAt:-1});;
+//       res.json(station);
+//    }
+//    catch(err){
+//       res.json({message: err});
+//    }
+// });
 
 //Get a station
 router.get('/:id', async (req, res) => {
@@ -170,24 +156,24 @@ router.get('/:id/totalbeneficiary', async (req, res) => {
   }
 });
 
-// Get products based on station
-router.get('/:id/products', async (req, res) => {
+// Get all stations or filter by 'type'
+router.get('/', async (req, res) => {
   try {
-    const stationId = req.params.id;
-    const station = await Station.findById(stationId);
-
-    if (!station) {
-      return res.status(404).json({ error: 'Station not found' });
-    }
-
-    const products = station.product; // Assuming 'product' is an array of products in your station schema
-
-    res.json({ products });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      const query = {};
+      
+      // Check if 'type' query parameter is provided
+      if (req.query.type) {
+          query.type = req.query.type; // Add type filter to the query
+      }
+      
+      const stations = await Station.find(query).sort({ createdAt: -1 });
+      res.json(stations);
+  } catch (err) {
+      res.status(500).json({ message: err });
   }
 });
+
+
    
 
  module.exports = router;

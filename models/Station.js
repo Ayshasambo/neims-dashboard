@@ -11,9 +11,13 @@ const stationSchema = new mongoose.Schema({
         type: Number
        },
        category: [{
-              id: {
-                type: String
-              },
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Category'
+        },
+              // id: {
+              //   type: String
+              // },
               name: {
                 type: String
               },
