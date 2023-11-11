@@ -34,9 +34,6 @@ router.post('/', async (req, res) => {
     } else if (individual === 'child') {
       populatedStation.beneficiary.children += 1; 
     }
-
-    // await Promise.all([populatedStation.save(), newBeneficiary.save()]); // Save both the station and beneficiary
-
     await populatedStation.save();
     await newBeneficiary.save();
 

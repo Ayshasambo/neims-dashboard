@@ -17,6 +17,9 @@ const productSchema = new mongoose.Schema({
       },
       name: {
         type: String
+      },
+      type:{
+        type:String
       }
     },
  
@@ -41,11 +44,33 @@ const productSchema = new mongoose.Schema({
     name:{type: String}
   },
   bincard:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'Bincard'
-  }],
+      srvnumber: String,
+      movement: {
+        type: String,
+        default: 'restock',
+      },
+      quantity: Number,
+      balance: Number,
+    }],
 },
 {timestamps:true}
 );
+
+// Define pre-save middleware
+productSchema.pre('save', function (next) {
+  // Check if bincard array is empty (or not provided)
+  if (!this.bincard || this.bincard.length === 0) {
+    // Create a default bincard entry based on the current product details
+    const defaultBincard = {
+      srvnumber: this.srvnumber,
+      quantity: this.quantity,
+      balance: this.quantity,
+    };
+    // Add the default bincard entry to the bincard array
+    this.bincard = [defaultBincard];
+  }
+  next();
+});
+
 
 module.exports = mongoose.model("Product", productSchema);

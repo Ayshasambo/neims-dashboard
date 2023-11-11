@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
   try {
     const populatedCategory = await Category.findById(category);
     const populatedStation = await Station.findById(station);
-    const populatedBincard = await Bincard.findById(bincard);
+    //const populatedBincard = await Bincard.findById(bincard);
     const populatedStoreofficer = await User.findById(storeofficer);
     const populatedVerificationofficer = await User.findById(verificationofficer);
 
@@ -23,24 +23,24 @@ router.post('/', async (req, res) => {
       quantity,
       srvnumber,
       station: {
-        id: populatedStation._id,
-        name: populatedStation.name
+        //id: populatedStation._id,
+        name: populatedStation.name,
+        type: populatedStation.type
       },
       category: {
-        id: populatedCategory._id,
+        //id: populatedCategory._id,
         name: populatedCategory.name
       },
       tag,
-      // bincard: {
-      //   id:populatedBincard._id},
+      bincard,
       storeofficer: populatedStoreofficer,
       verificationofficer: populatedVerificationofficer
     });
 
     await newProduct.save();
 
-     // Add new product to station
-       populatedStation.product.push(newProduct);
+    // Add new product to station
+     populatedStation.product.push(newProduct);
       
     // Update the station change property
     populatedStation.change = 'increase';
@@ -57,29 +57,14 @@ router.post('/', async (req, res) => {
         const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
          if (stationCategory) {
         stationCategory.total += quantity;
-       //console.log('typeof quantity:', typeof quantity);
-       //console.log('typeof stationCategory.total:', typeof stationCategory.total);
       } else {
       console.error('Category not found in station.');
      }
     // Save the updated station
     await populatedStation.save();
 
-    // Create bincard
-    const newBincard = new Bincard({
-      product:newProduct._id,
-      srvnumber: newProduct.srvnumber,
-      movement: 'restock', 
-      quantity: newProduct.quantity,
-      balance: newProduct.quantity,
-      storeofficer: newProduct.storeofficer,
-      timestamp: Date.now()
-    });
-    newProduct.bincard.push(newBincard);
-    console.log('newBincard:', newBincard)
-    await newBincard.save();
 
-    res.json({ product: newProduct, bincard: newBincard });
+    res.json({ product: newProduct});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -141,14 +126,47 @@ router.get('/', async (req, res) => {
       query['station.name'] = req.query.station;
     }
 
+     // Check if 'station' query parameter is provided
+     if (req.query.station) {
+      query['station.type'] = req.query.station;
+    }
+
+    if (req.query.month) {
+      const startOfMonth = new Date(req.query.month);
+      const endOfMonth = new Date(startOfMonth);
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+
+      query.createdAt = {
+        $gte: startOfMonth,
+        $lt: endOfMonth,
+      };
+    }
+
     // Add more parameters as needed
 
     const products = await Product.find(query).sort({ createdAt: -1 });
-    res.json(products);
+    
+     // Calculate the total quantity for the specified month
+     const total = products.reduce((total, product) => {
+      return total + product.quantity;
+    }, 0);
+
+    res.json({products, total});
+
+     
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+
+
+
+
+
+
 
 // GET products based on station
 // router.get('/station/:stationId', async (req, res) => {

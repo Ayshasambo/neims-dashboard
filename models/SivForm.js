@@ -16,9 +16,9 @@ const sivFormSchema = new mongoose.Schema({
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: ' Product'
+    ref: 'Product'
   },
-  goingto:{
+  destination:{
     type:String
   },
   lga:{
@@ -38,5 +38,37 @@ const sivFormSchema = new mongoose.Schema({
 },
 {timestamps:true}
 );
+
+
+// Define pre-save middleware for SivForm
+sivFormSchema.pre('save', async function (next) {
+  try {
+    // Find the corresponding product based on the provided product ID
+    const product = await mongoose.model('Product').findById(this.product);
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    // Use the SIV number for outgoing items
+    const sivNumber = this.sivnumber || product.srvnumber;
+
+    // Create a new bincard entry for outgoing items
+    const outgoingBincard = {
+      srvnumber: sivNumber,
+      movement: this.destination, 
+      quantity: this.quantity,
+      balance: product.quantity - this.quantity, 
+    };
+
+    // Add the outgoing bincard entry to the product's bincard array
+    product.bincard.push(outgoingBincard);
+    await product.save();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 module.exports = mongoose.model("SivForm", sivFormSchema);

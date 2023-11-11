@@ -13,24 +13,25 @@ const mongoose = require('mongoose')
 
 // create the products
 router.post('/', async (req, res) => {
-  const { name, quantity, station, sivnumber, product, goingto, lga, category, tag, storeofficer, } = req.body;
+  const { name, quantity, station, sivnumber, product, destination, lga, category, tag, storeofficer, } = req.body;
   try {
-    const populatedCategory = await Category.findById(category);
-    const populatedStation = await Station.findById(station)
+    
     const populatedProduct = await Product.findById(product);
+    const populatedStation = await Station.findById(populatedProduct.station.id) 
+    const populatedCategory = await Category.findById(populatedProduct.category.id);
     const populatedStoreofficer = await User.findById(storeofficer);
 
-   console.log('populatedProduct:', populatedProduct)
+   //console.log('populatedProduct:', populatedProduct)
 
     const newSivForm = new SivForm({
-      name,
+      name:populatedProduct.name,
       quantity,
       sivnumber,
-      station: populatedStation,
+      station: populatedProduct.station,
       product:populatedProduct,
-      goingto,
+      destination,
       lga,
-      category: populatedCategory,
+      category: populatedProduct.category,
       tag,
       storeofficer: populatedStoreofficer,
     });
@@ -51,34 +52,24 @@ router.post('/', async (req, res) => {
     if (stationProduct) {
       stationProduct.quantity -= quantity;
       stationProduct.tag = 'distributed'; 
+    
+    // Update station category total
+    const categoryString = populatedCategory._id.toString();
+    const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
+    if (!stationCategory || stationCategory.total < quantity) {
+      return res.status(400).json({ error: 'Insufficient quantity in the station category' });
+    }
 
-      // If items quantity is 0, decrement category total
-      if (stationProduct.quantity === 0) {
-        const stationCategoryId = populatedCategory._id.toString();
-        const stationCategory = populatedStation.category.find(cat => cat._id.toString() === stationCategoryId);
-
-       if (stationCategory) {
-         stationCategory.total -= 1;
-        }
-        await populatedStation.save();
-      }    
+    if (stationCategory) {
+      stationCategory.total -= quantity;
+    } else {
+      console.error('Category not found in station.');
+    }
     }
 
     populatedStation.change = 'decrease'; 
     populatedStation.total -= quantity;   
     await populatedStation.save();
-    
-    // const newBincard = new Bincard({
-    //   //productlist: newSivForm._id,
-    //   sivnumber: newSivForm.sivnumber,
-    //   //movement: destination, 
-    //   quantity: newSivForm.quantity,
-    //   balance: populatedProductlist.quantity,
-    //   //storeofficer: newProductlist.storeofficer 
-    // });
-    // console.log('newBincard:', newBincard)
-    // await newBincard.save();
-
     
     res.json(newSivForm);
   } catch (error) {

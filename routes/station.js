@@ -26,10 +26,6 @@ router.post('/', async (req, res) => {
       areaofcoverage,
       beneficiary,
     });
-    
-
-   
-
    
     await newStation.save();
     
