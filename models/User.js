@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
-    name:{
+    firstname:{
         type: String,
         required: true
     },
@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema({
         name:{type: String}
     },
     station:{
-        type: String
+        id:{type:String},
+        name:{type:String}    
     }
     // station:{
     //     id:{type:String},

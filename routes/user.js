@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User.js');
 const Role = require("../models/Role.js");
-//const Station = require("../models/Station.js");
+const Station = require("../models/Station.js");
 //const {verifyToken} = require("../middlewares/authjwt.js");
 //const checkPermissions = require("../middlewares/checkpermission");
 const bcrypt = require('bcrypt');
@@ -11,23 +11,24 @@ const bcrypt = require('bcrypt');
 // CREATE A NEW USER
 router.post('/',  async (req, res) => {
   try {
-    const { name, surname, email, password, role, station } = req.body;
+    const { firstname, surname, email, password, role, station } = req.body;
     const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     const populatedRole = await Role.findById(role);
+    const populatedStation = await Station.findById(station)
     
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).send('Email already exists');
     }
     const user = new User({
-      name,
+      firstname,
       surname,
       email, 
       password:hashedPassword,
       role: populatedRole,
-      station
+      station:populatedStation
     });
     await user.save();
     res.send("User Created successfully");
