@@ -114,7 +114,6 @@ router.put('/:id', async (req, res) =>{
     res.json({message:'product not updated'}) 
   }
 });
-
 // GET all products
 router.get('/', async (req, res) => {
   try {
@@ -126,39 +125,70 @@ router.get('/', async (req, res) => {
     }
 
     // Check if 'station' query parameter is provided
-    if (req.query.station) {
-      query['station.name'] = req.query.station;
+    if (req.query.stationName) {
+      query['station.name'] = req.query.stationName;
     }
 
-     // Check if 'station' query parameter is provided
-     if (req.query.station) {
-      query['station.type'] = req.query.station;
+    if (req.query.stationType) {
+      query['station.type'] = req.query.stationType;
     }
 
-    if (req.query.month) {
-      const startOfMonth = new Date(req.query.month);
-      const endOfMonth = new Date(startOfMonth);
-      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-
-      query.createdAt = {
-        $gte: startOfMonth,
-        $lt: endOfMonth,
-      };
-    }
-    // Add more parameters as needed
     const products = await Product.find(query).sort({ createdAt: -1 });
-    
-     // Calculate the total quantity for the specified month
-     const total = products.reduce((total, product) => {
-      return total + product.quantity;
-    }, 0);
-
-    res.json({products, total});
-
+    res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+
+
+
+
+// GET all products
+// router.get('/', async (req, res) => {
+//   try {
+//     const query = {};
+
+//     // Check if 'category' query parameter is provided
+//     if (req.query.category) {
+//       query['category.name'] = req.query.category;
+//     }
+
+//     // Check if 'station' query parameter is provided
+//     if (req.query.station) {
+//       query['station.name'] = req.query.station;
+//     }
+
+//      // Check if 'station' query parameter is provided
+//      if (req.query.station) {
+//       query['station.type'] = req.query.station;
+//     }
+
+//     if (req.query.month) {
+//       const startOfMonth = new Date(req.query.month);
+//       const endOfMonth = new Date(startOfMonth);
+//       endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+
+//       query.createdAt = {
+//         $gte: startOfMonth,
+//         $lt: endOfMonth,
+//       };
+//     }
+//     // Add more parameters as needed
+//     const products = await Product.find(query).sort({ createdAt: -1 });
+    
+//      // Calculate the total quantity for the specified month
+//      const total = products.reduce((total, product) => {
+//       return total + product.quantity;
+//     }, 0);
+
+//     res.json({products, total});
+
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 
 module.exports = router

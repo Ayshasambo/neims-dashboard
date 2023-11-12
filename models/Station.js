@@ -55,6 +55,10 @@ const stationSchema = new mongoose.Schema({
         type:String
        },
 
+       head:{
+        type: String
+       },
+
        beneficiary: {
         men: {
           type: Number,

@@ -7,7 +7,7 @@ const Category = require('../models/Category.js');
 
 //Create a station
 router.post('/', async (req, res) => {
-  const { name, type, total, category, change, product, areaofcoverage, mobile, location, beneficiary} = req.body;
+  const { name, type, total, category, change, product, areaofcoverage, mobile, location, head,beneficiary} = req.body;
 
   try {
     const populatedProduct = await Promise.all(product.map(id => Product.findById(id)));
@@ -26,6 +26,7 @@ router.post('/', async (req, res) => {
       areaofcoverage,
       mobile,
       location,
+      head,
       beneficiary,
     });
    
@@ -120,12 +121,32 @@ router.get('/', async (req, res) => {
           query.type = req.query.type; // Add type filter to the query
       }
       
+      if (req.query.name) {
+        query.name = req.query.name; // Add name filter to the query
+      }
       const stations = await Station.find(query).sort({ createdAt: -1 });
       res.json(stations);
   } catch (err) {
       res.status(500).json({ message: err });
   }
 });
+
+// Get all stations or filter by 'type'
+// router.get('/', async (req, res) => {
+//   try {
+//       const query = {};
+      
+//       // Check if 'type' query parameter is provided
+//       if (req.query.type) {
+//           query.type = req.query.type; // Add type filter to the query
+//       }
+      
+//       const stations = await Station.find(query).sort({ createdAt: -1 });
+//       res.json(stations);
+//   } catch (err) {
+//       res.status(500).json({ message: err });
+//   }
+// });
 
 
    
