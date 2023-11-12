@@ -27,6 +27,8 @@ const beneficiaryRoute = require('./routes/beneficiary');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
 const sivFormRoute = require('./routes/sivForm');
+const sivNumberRoute = require('./routes/sivNumber')
+const srvNumberRoute = require('./routes/srvNumber')
 const bincardRoute = require('./routes/bincard');
 
 
@@ -42,6 +44,8 @@ app.use('/api/beneficiary', beneficiaryRoute);
 app.use('/api/category', categoryRoute);
 app.use('/api/product', productRoute);
 app.use('/api/sivForm', sivFormRoute);
+app.use('/api/sivNumber', sivNumberRoute);
+app.use('/api/srvNumber', srvNumberRoute);
 app.use('/api/bincard', bincardRoute);
 
 

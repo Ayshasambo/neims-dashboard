@@ -78,6 +78,13 @@ router.post('/', async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
 // GET all outgoing products
 router.get('/', async (req, res) => {
   try {

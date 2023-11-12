@@ -23,12 +23,12 @@ router.post('/', async (req, res) => {
       quantity,
       srvnumber,
       station: {
-        //id: populatedStation._id,
+        id: populatedStation._id,
         name: populatedStation.name,
         type: populatedStation.type
       },
       category: {
-        //id: populatedCategory._id,
+        id: populatedCategory._id,
         name: populatedCategory.name
       },
       tag,
@@ -75,6 +75,10 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+    // .populate({
+    //   path: 'station',
+    //   select: 'name type',
+    // });
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -111,52 +115,6 @@ router.put('/:id', async (req, res) =>{
   }
 });
 
-// router.get('/', async (req, res) => {
-//   try {
-//     const query = {};
-
-//     // Check if 'category' query parameter is provided
-//     if (req.query.category) {
-//       query['category.name'] = req.query.category;
-//     }
-
-//     // Check if 'station' query parameter is provided
-//     if (req.query.station) {
-//       query['station.name'] = req.query.station;
-//     }
-
-//     // Check if 'station' query parameter is provided
-//     if (req.query.station) {
-//       query['station.type'] = req.query.station;
-//     }
-
-//     if (req.query.month) {
-//       const startOfMonth = new Date(req.query.month);
-//       const endOfMonth = new Date(startOfMonth);
-//       endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-
-//       query.createdAt = {
-//         $gte: startOfMonth,
-//         $lt: endOfMonth,
-//       };
-//     }
-
-//     // Retrieve products based on the constructed query
-//     const products = await Product.find(query).sort({ createdAt: -1 });
-
-//     // Calculate the total quantity for the specified month
-//     const total = products.reduce((total, product) => {
-//       return total + product.quantity;
-//     }, 0);
-
-//     // Return the products and total separately in the response
-//     res.json({ products, total });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// });
-
-
 // GET all products
 router.get('/', async (req, res) => {
   try {
@@ -187,9 +145,7 @@ router.get('/', async (req, res) => {
         $lt: endOfMonth,
       };
     }
-
     // Add more parameters as needed
-
     const products = await Product.find(query).sort({ createdAt: -1 });
     
      // Calculate the total quantity for the specified month
@@ -197,54 +153,12 @@ router.get('/', async (req, res) => {
       return total + product.quantity;
     }, 0);
 
-    res.json(products);
-
-     
+    res.json({products, total});
 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-
-
-
-
-
-
-
-
-// GET products based on station
-// router.get('/station/:stationId', async (req, res) => {
-//   try {
-//     const products = await Product.find({ 'station.id': req.params.stationId });
-//     res.json(products);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-//Get products based on catgories
-// router.get('/category/:categoryId', async (req, res) => {
-//   try {
-//     const products = await Product.find({ 'category.id': req.params.categoryId });
-//     res.json(products);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-// GET all products
-// router.get('/', async (req, res) => {
-//   try {
-//     const products = await Product.find().sort({createdAt:-1});
-//     res.json(products);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// });
 
 
 module.exports = router
