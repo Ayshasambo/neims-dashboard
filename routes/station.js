@@ -7,7 +7,7 @@ const Category = require('../models/Category.js');
 
 //Create a station
 router.post('/', async (req, res) => {
-  const { name, type, total, category, change, product, areaofcoverage, beneficiary} = req.body;
+  const { name, type, total, category, change, product, areaofcoverage, mobile, location, beneficiary} = req.body;
 
   try {
     const populatedProduct = await Promise.all(product.map(id => Product.findById(id)));
@@ -24,6 +24,8 @@ router.post('/', async (req, res) => {
       change,
       product:populatedProduct,
       areaofcoverage,
+      mobile,
+      location,
       beneficiary,
     });
    
@@ -35,18 +37,6 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-//Get all staions
-// router.get('/', async (req, res) => {
-//     try{
-//      const station = await Station.find().sort({createdAt:-1});;
-//       res.json(station);
-//    }
-//    catch(err){
-//       res.json({message: err});
-//    }
-// });
 
 //Get a station
 router.get('/:id', async (req, res) => {
@@ -86,38 +76,6 @@ router.put('/:id', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-
-  // Get total quantity of products permonth
-router.get('/:id/totalproducts', async (req, res) => {
-  try {
-    const stationId = req.params.id;
-    const station = await Station.findById(stationId);
-
-    if (!station) {
-      return res.status(404).json({ error: 'Station not found' });
-    }
-    // Get the current month and year
-    const today = new Date();
-    const currentMonth = today.getMonth() + 1; 
-    const currentYear = today.getFullYear();
-
-    // Filter products by month and year
-    const productsThisMonth = station.product.filter(product => {
-      const productDate = new Date(product.createdAt);
-      const productMonth = productDate.getMonth() + 1;
-      const productYear = productDate.getFullYear();
-      return productMonth === currentMonth && productYear === currentYear;
-    });
-    const totalQuantityThisMonth = productsThisMonth.reduce((total, product) => total + product.quantity, 0);
-    console.log('totalQuantitythisMonth:', totalQuantityThisMonth)
-
-    res.json({ stationId, totalQuantityThisMonth, month:currentMonth, year:currentYear});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
 
 // Get total counts of men, women, and children per month
 router.get('/:id/totalbeneficiary', async (req, res) => {

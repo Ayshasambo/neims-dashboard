@@ -47,6 +47,14 @@ const stationSchema = new mongoose.Schema({
          type: String
        }],
 
+       mobile:{
+        type: Number
+       },
+
+       location:{
+        type:String
+       },
+
        beneficiary: {
         men: {
           type: Number,
