@@ -32,8 +32,11 @@ const sivFormSchema = new mongoose.Schema({
     type: String,
   },
   storeofficer:{
-    id:{type:String},
-    name:{type: String}
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    firstname:{type: String}
   }
 },
 {timestamps:true}
@@ -54,11 +57,13 @@ sivFormSchema.pre('save', async function (next) {
     const sivNumber = this.sivnumber || product.srvnumber;
 
     // Create a new bincard entry for outgoing items
+    const lastBincardEntry = product.bincard.length > 0 ? product.bincard[product.bincard.length - 1] : { balance: product.quantity };
     const outgoingBincard = {
       srvnumber: sivNumber,
       movement: this.destination, 
       quantity: this.quantity,
-      balance: product.quantity - this.quantity, 
+      balance: lastBincardEntry.balance - this.quantity,
+      signature: `${this.storeofficer.firstname}`, 
     };
 
     // Add the outgoing bincard entry to the product's bincard array

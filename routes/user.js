@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
 // CREATE A NEW USER
 router.post('/',  async (req, res) => {
   try {
-    const { firstname, surname, email, password, role, station } = req.body;
+    const { firstname, surname, email, password, role, station, status } = req.body;
     const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -26,12 +26,13 @@ router.post('/',  async (req, res) => {
       firstname,
       surname,
       email, 
+      status,
       password:hashedPassword,
       role: populatedRole,
-      station:populatedStation
+      station:populatedStation,
     });
     await user.save();
-    res.send("User Created successfully");
+    res.send(user);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error creating user');
@@ -43,7 +44,7 @@ router.get("/:id",  async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const { password, ...others } = user._doc;
-    res.status(200).json(others);
+    res.json(others);
   } catch (err) {
     res.status(500).json('User Not Found');
   }
@@ -53,21 +54,14 @@ router.get("/:id",  async (req, res) => {
 router.get('/',  async (req, res) => {
   try{
      const getUsers = await User.find().sort({createdAt: -1});
-      res.json(getUsers)
+     const users = getUsers.map(user => {
+      const { password, ...others } = user._doc;
+      return others;
+    });
+    res.json(users);
   }
   catch(err){
     res.status(404).json({message:err});
-  }
-});
-
- //DELETE user
- router.delete('/:id',   async (req, res) =>{
-  try{ 
-    const removeUser = await User.deleteOne({_id: req.params.id})
-    res.json("User Deleted")
-  }
-  catch(err){
-      res.status(404).json('Error deleting user')
   }
 });
 

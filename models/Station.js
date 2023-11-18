@@ -15,19 +15,9 @@ const stationSchema = new mongoose.Schema({
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Category'
         },
-              // id: {
-              //   type: String
-              // },
-              name: {
-                type: String
-              },
-              color: {
-                type: String
-              },
-              total: {
-                type: Number,
-                default: 0
-              }
+        name: {type: String},
+        color: {type: String},
+        total: {type: Number,default: 0}
        }],
        change:{
         type : String
@@ -59,23 +49,24 @@ const stationSchema = new mongoose.Schema({
         type: String
        },
 
-       beneficiary: {
-        men: {
-          type: Number,
-          default: 0
-        },
-        women: {
-          type: Number,
-          default: 0
-        },
-        children: {
-          type: Number,
-          default: 0
-        }, 
-      }
 },
 {timestamps:true}
 );
 
 
 module.exports = mongoose.model("Station", stationSchema);
+
+//beneficiary: {
+  //   men: {
+  //     type: Number,
+  //     default: 0
+  //   },
+  //   women: {
+  //     type: Number,
+  //     default: 0
+  //   },
+  //   children: {
+  //     type: Number,
+  //     default: 0
+  //   }, 
+  // }

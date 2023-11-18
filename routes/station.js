@@ -131,23 +131,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get all stations or filter by 'type'
-// router.get('/', async (req, res) => {
-//   try {
-//       const query = {};
-      
-//       // Check if 'type' query parameter is provided
-//       if (req.query.type) {
-//           query.type = req.query.type; // Add type filter to the query
-//       }
-      
-//       const stations = await Station.find(query).sort({ createdAt: -1 });
-//       res.json(stations);
-//   } catch (err) {
-//       res.status(500).json({ message: err });
-//   }
-// });
-
 
    
 

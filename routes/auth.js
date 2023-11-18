@@ -18,6 +18,11 @@ const jwt = require('jsonwebtoken');
          // Set user info in session
          req.session.user = user;
 
+         // Check the user's status
+        if (user.status !== 'active') {
+          return res.status(401).json({ message: 'Account is inactive' });
+        }
+
          // Generate JWT token
          const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '42h' }); 
 

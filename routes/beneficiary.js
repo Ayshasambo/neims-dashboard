@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 // CREATE a new beneficiary
 router.post('/', async (req, res) => {
-  const { name, individual, station, location, age } = req.body;
+  const { name, individual, station, state, lga, age } = req.body;
 
   try {
     // Find the populated station
@@ -21,38 +21,21 @@ router.post('/', async (req, res) => {
     const newBeneficiary = await Beneficiary({
       name,
       individual,
-      station:populatedStation._id,
-      location,
+      station:populatedStation,
+      state,
+      lga,
       age,
     });
 
-     // Update the station's beneficiary counts
-     if (individual === 'male') {
-      populatedStation.beneficiary.men += 1; 
-    } else if(individual === 'female') {
-      populatedStation.beneficiary.women += 1;
-    } else if (individual === 'child') {
-      populatedStation.beneficiary.children += 1; 
-    }
-    await populatedStation.save();
     await newBeneficiary.save();
+    const populatedBeneficiary = await Beneficiary.findById(newBeneficiary._id).populate('station', 'name');
 
-    res.json(newBeneficiary);
+    res.json(populatedBeneficiary);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
-
-  // GET all beneficiaries
-router.get('/', async (req, res) => {
-    try {
-      const beneficiary = await Beneficiary.find().sort({createdAt:-1});
-      res.json(beneficiary);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
 
 // GET a single benficiary
 router.get('/:id', async (req, res) => {
@@ -81,7 +64,7 @@ router.get('/:id', async (req, res) => {
     }
   });
 
-  // DELETE A PRODUCT
+  // DELETE A beneficiary
 router.delete('/:id', async (req, res) => {
   try {
     const deletedBeneficiary = await Beneficiary.findByIdAndDelete(req.params.id);
@@ -93,27 +76,73 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// GET all beneficiaries
+router.get('/', async (req, res) => {
+  try {
+    const query = {};
+
+    // Check if 'station' query parameter is provided
+    if (req.query.stationName) {
+      query['station.name'] = req.query.stationName;
+    }
+
+    if (req.query.stationType) {
+      query['station.type'] = req.query.stationType;
+    }
+
+    if (req.query.individual) {
+      query.individual = req.query.individual;
+    }
+
+    if (req.query.state) {
+      query.state = req.query.state;
+    }
+
+    if (req.query.lga) {
+      query.lga = req.query.lga;
+    }
+
+    if (req.query.month) {
+      const startOfMonth = new Date(req.query.month);
+      const endOfMonth = new Date(startOfMonth);
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+      
+      query.createdAt = {
+        $gte: startOfMonth,
+        $lt: endOfMonth,
+      };
+    }
+
+    const beneficiaries = await Beneficiary.find(query).sort({ createdAt: -1 });
+
+    let men = 0;
+    let women = 0;
+    let children = 0;
+
+    beneficiaries.forEach((beneficiary) => {
+      if (beneficiary.individual === 'male') {
+        men += 1;
+      } else if (beneficiary.individual === 'female') {
+        women += 1;
+      } else {
+        children += 1;
+      }
+    });
+
+    res.json({
+      beneficiaries,
+      men,
+      women,
+      children,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
   
 module.exports = router;
 
-// station:{
-      //  id: populatedStation._id,
-      //  name:populatedStation.name
-      // },
- // Update the station's beneficiary counts
-// if (individual === 'male') {
-//   await Station.findByIdAndUpdate(
-//     populatedStation._id,
-//     { $inc: { 'beneficiary.men': 1 } }
-//   );
-// } else if (individual === 'female') {
-//   await Station.findByIdAndUpdate(
-//     populatedStation._id,
-//     { $inc: { 'beneficiary.women': 1 } }
-//   );
-// } else if (individual === 'child') {
-//   await Station.findByIdAndUpdate(
-//     populatedStation._id,
-//     { $inc: { 'beneficiary.children': 1 } }
-//   );
-// }
+
+
+

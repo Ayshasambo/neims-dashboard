@@ -2,13 +2,12 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
+
     firstname:{
         type: String,
-        required: true
     },
     surname:{
         type: String,
-        required: true
     },
     email:{
         type: String,
@@ -30,14 +29,11 @@ const userSchema = new mongoose.Schema({
     station:{
         id:{type:String},
         name:{type:String}    
+    },
+    status:{
+        type:String,
+        default:'active'
     }
-    // station:{
-    //     id:{type:String},
-    //     name:{type:String}
-    // }
-    //station:{
-        //type: String
-    //}
 });
 
 module.exports = mongoose.model("User", userSchema);

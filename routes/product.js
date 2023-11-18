@@ -10,14 +10,13 @@ const mongoose = require('mongoose')
 
 // create the products
 router.post('/', async (req, res) => {
-  const { name, quantity, station, srvnumber,  category, tag, bincard, storeofficer, verificationofficer } = req.body;
+  const { name, quantity, station, srvnumber,  category, tag, bincard, storeofficer} = req.body;
   try {
     const populatedCategory = await Category.findById(category);
     const populatedStation = await Station.findById(station);
     //const populatedBincard = await Bincard.findById(bincard);
     const populatedStoreofficer = await User.findById(storeofficer);
-    const populatedVerificationofficer = await User.findById(verificationofficer);
-
+    
     const newProduct = new Product({
       name,
       quantity,
@@ -32,9 +31,12 @@ router.post('/', async (req, res) => {
         name: populatedCategory.name
       },
       tag,
+      //storeofficer: populatedStoreofficer,
+      storeofficer:{
+        id:populatedStoreofficer._id,
+        firstname:populatedStoreofficer.firstname
+      },
       bincard,
-      storeofficer: populatedStoreofficer,
-      verificationofficer: populatedVerificationofficer
     });
 
     await newProduct.save();
@@ -62,7 +64,6 @@ router.post('/', async (req, res) => {
      }
     // Save the updated station
     await populatedStation.save();
-
 
     res.json({ product: newProduct});
   } catch (error) {
@@ -114,6 +115,8 @@ router.put('/:id', async (req, res) =>{
     res.json({message:'product not updated'}) 
   }
 });
+
+
 // GET all products
 router.get('/', async (req, res) => {
   try {
@@ -133,63 +136,29 @@ router.get('/', async (req, res) => {
       query['station.type'] = req.query.stationType;
     }
 
+    if (req.query.month) {
+      const startOfMonth = new Date(req.query.month);
+      const endOfMonth = new Date(startOfMonth);
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+      
+      query.createdAt = {
+        $gte: startOfMonth,
+        $lt: endOfMonth,
+      };
+    }
+
     const products = await Product.find(query).sort({ createdAt: -1 });
-    res.json(products);
+
+    // Calculate the total quantity for the specified month
+    const total = products.reduce((total, product) => {
+      return total + product.quantity;
+    }, 0);
+
+    res.json({products, total});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-
-
-
-
-
-// GET all products
-// router.get('/', async (req, res) => {
-//   try {
-//     const query = {};
-
-//     // Check if 'category' query parameter is provided
-//     if (req.query.category) {
-//       query['category.name'] = req.query.category;
-//     }
-
-//     // Check if 'station' query parameter is provided
-//     if (req.query.station) {
-//       query['station.name'] = req.query.station;
-//     }
-
-//      // Check if 'station' query parameter is provided
-//      if (req.query.station) {
-//       query['station.type'] = req.query.station;
-//     }
-
-//     if (req.query.month) {
-//       const startOfMonth = new Date(req.query.month);
-//       const endOfMonth = new Date(startOfMonth);
-//       endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-
-//       query.createdAt = {
-//         $gte: startOfMonth,
-//         $lt: endOfMonth,
-//       };
-//     }
-//     // Add more parameters as needed
-//     const products = await Product.find(query).sort({ createdAt: -1 });
-    
-//      // Calculate the total quantity for the specified month
-//      const total = products.reduce((total, product) => {
-//       return total + product.quantity;
-//     }, 0);
-
-//     res.json({products, total});
-
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// });
-
 
 module.exports = router
 

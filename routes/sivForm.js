@@ -11,15 +11,51 @@ const mongoose = require('mongoose')
 
 
 
-// create the products
+// // create the products
 router.post('/', async (req, res) => {
   const { name, quantity, station, sivnumber, product, destination, lga, category, tag, storeofficer, } = req.body;
   try {
     
     const populatedProduct = await Product.findById(product);
-    const populatedStation = await Station.findById(populatedProduct.station.id) 
+    const populatedStation = await Station.findById(populatedProduct.station.id); 
     const populatedCategory = await Category.findById(populatedProduct.category.id);
     const populatedStoreofficer = await User.findById(storeofficer);
+
+
+      // Check if the requested quantity exceeds the available quantity in the product
+      if (populatedProduct.quantity < quantity) {
+        console.log('Requested quantity exceeds available quantity in the product.');
+        return res.status(400).json({ error: 'Quantity is more than what is currently available' });
+      }
+  
+      // Update product quantity
+      populatedProduct.quantity -= quantity;
+      populatedProduct.tag = 'distribution';
+      await populatedProduct.save();
+  
+      console.log('Product quantity after update:', populatedProduct.quantity);
+      // Update stations product
+      const stationProduct = populatedStation.product.find(prod => prod._id.toString() === product);
+      if (!stationProduct || stationProduct.quantity < quantity) {
+        return res.status(400).json({ error: 'Quantity is more than what is currently available in the station' });
+      }
+  
+      stationProduct.quantity -= quantity;
+      stationProduct.tag = 'distribution';
+  
+      // Update station category total
+      const categoryString = populatedCategory._id.toString();
+      const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
+      if (!stationCategory || stationCategory.total < quantity) {
+        return res.status(400).json({ error: 'Insufficient quantity in the station category' });
+      }
+  
+      stationCategory.total -= quantity;
+  
+      populatedStation.change = 'decrease';
+      populatedStation.total -= quantity;
+      await populatedStation.save();
+
 
    //console.log('populatedProduct:', populatedProduct)
 
@@ -37,51 +73,13 @@ router.post('/', async (req, res) => {
     });
 
     await newSivForm.save();
-
-    // Update product quantity
-    populatedProduct.quantity -= quantity;
-    populatedProduct.tag = "distributed";
-    await populatedProduct.save();
-
-    // Update stations product
-    const stationProduct = populatedStation.product.find(prod => prod._id.toString() === product);
-    if (!stationProduct || stationProduct.quantity < quantity) {
-      return res.status(400).json({ error: 'Insufficient quantity in the station' });
-    }
-
-    if (stationProduct) {
-      stationProduct.quantity -= quantity;
-      stationProduct.tag = 'distributed'; 
-    
-    // Update station category total
-    const categoryString = populatedCategory._id.toString();
-    const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
-    if (!stationCategory || stationCategory.total < quantity) {
-      return res.status(400).json({ error: 'Insufficient quantity in the station category' });
-    }
-
-    if (stationCategory) {
-      stationCategory.total -= quantity;
-    } else {
-      console.error('Category not found in station.');
-    }
-    }
-
-    populatedStation.change = 'decrease'; 
-    populatedStation.total -= quantity;   
-    await populatedStation.save();
-    
+   
     res.json(newSivForm);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-
-
-
 
 
 
@@ -135,7 +133,50 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-
-
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+ // // Update product quantity
+    // populatedProduct.quantity -= quantity;
+    // populatedProduct.tag = "distributed";
+    // await populatedProduct.save();
+
+    // // Update stations product
+    // const stationProduct = populatedStation.product.find(prod => prod._id.toString() === product);
+    // if (!stationProduct || stationProduct.quantity < quantity) {
+    //   return res.status(400).json({ error: 'Qunatity is more than what is currently available' });
+    // }
+
+    // if (stationProduct) {
+    //   stationProduct.quantity -= quantity;
+    //   stationProduct.tag = 'distributed'; 
+    
+    // // Update station category total
+    // const categoryString = populatedCategory._id.toString();
+    // const stationCategory = populatedStation.category.find(cat => cat._id.toString() === categoryString);
+    // if (!stationCategory || stationCategory.total < quantity) {
+    //   return res.status(400).json({ error: 'Insufficient quantity in the station category' });
+    // }
+
+    // if (stationCategory) {
+    //   stationCategory.total -= quantity;
+    // } else {
+    //   console.error('Category not found in station.');
+    // }
+    // }
+
+    // populatedStation.change = 'decrease'; 
+    // populatedStation.total -= quantity;   
+    // await populatedStation.save();
+    
 

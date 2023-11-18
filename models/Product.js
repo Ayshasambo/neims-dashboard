@@ -21,8 +21,6 @@ const productSchema = new mongoose.Schema({
       type:{
         type:String
       }
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: 'Station'
     },
  
   category:{
@@ -38,41 +36,47 @@ const productSchema = new mongoose.Schema({
     type: String,
   },
   storeofficer:{
-    id:{type:String},
-    name:{type: String}
-  },
-  verificationofficer:{
-    id:{type:String},
-    name:{type: String}
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    //id:{type:String},
+    firstname:{type: String}
   },
   bincard:[{
-      srvnumber: String,
-      movement: {
-        type: String,
-        default: 'restock',
-      },
-      quantity: Number,
-      balance: Number,
-    }],
+    srvnumber: String,
+    movement: {
+      type: String,
+      default: 'restock',
+    },
+    quantity: Number,
+    balance: Number,
+    signature: {  // Include the signature field
+      type: String, // Modify the type based on the signature details you're capturing
+    },
+  }],
 },
 {timestamps:true}
 );
 
 // Define pre-save middleware
 productSchema.pre('save', function (next) {
-  // Check if bincard array is empty (or not provided)
   if (!this.bincard || this.bincard.length === 0) {
-    // Create a default bincard entry based on the current product details
+    
     const defaultBincard = {
       srvnumber: this.srvnumber,
       quantity: this.quantity,
-      balance: this.quantity,
+      balance: this.quantity, 
+      signature: `${this.storeofficer.firstname}`,   
     };
     // Add the default bincard entry to the bincard array
     this.bincard = [defaultBincard];
-  }
+  } 
   next();
 });
 
 
 module.exports = mongoose.model("Product", productSchema);
+ // const storeOfficerId = this.storeofficer.id;
+    // const storeOfficerName = this.storeofficer.firstname;
+    //signature: `${this.storeofficer.firstname} ${this.storeofficer.lastname}`,
