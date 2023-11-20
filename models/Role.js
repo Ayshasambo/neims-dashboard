@@ -9,9 +9,16 @@ const roleSchema = new mongoose.Schema({
     description: {
       type: String
      }, 
-     permissions: {
-      type: Array
-     },      
+     permissions: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Permission'
+     }],
+    //  permissions: [{
+    //   id:{type:String},
+    //   name:{type:String},
+    //   actions:[String]
+    //  }],
+          
   },
   {timestamps: true}
   );

@@ -31,9 +31,9 @@ const userSchema = new mongoose.Schema({
         name:{type:String}    
     },
     status:{
-        type:String,
-        default:'active'
-    }
+        type: Boolean, 
+        default: true
+    },
 });
 
 module.exports = mongoose.model("User", userSchema);

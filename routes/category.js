@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
+const {verifyToken} = require("../middlewares/authjwt.js");
+const checkPermissions = require("../middlewares/checkpermission");
+
 //const Station = require('../models/Station');
 
 // CREATE a new category
-router.post('/', async (req, res) => {
+router.post('/',  async (req, res) => {
     try {
       const {name, color,} = req.body;
       const category = new Category({ name, color });
@@ -17,7 +20,7 @@ router.post('/', async (req, res) => {
   });
 
   // GET all categories
-router.get('/', async (req, res) => {
+router.get('/',  async (req, res) => {
     try {
       const category = await Category.find().sort({createdAt:-1});
       res.json(category);
@@ -27,7 +30,7 @@ router.get('/', async (req, res) => {
   });
 
 // GET a category
-router.get('/:id', async (req, res) => {
+router.get('/:id',  async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
@@ -40,7 +43,7 @@ router.get('/:id', async (req, res) => {
 });
 
  //UPDATE category
- router.put('/:id', async (req, res) =>{
+ router.put('/:id',  async (req, res) =>{
     try{
       const updateCategory = await Category.updateOne(
         {_id: req.params.id}, 
@@ -54,7 +57,7 @@ router.get('/:id', async (req, res) => {
   });
 
   // DELETE A PRODUCT
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',  async (req, res) => {
   try {
     const deletedCategory = await Category.findByIdAndDelete(req.params.id);
     if (!deletedCategory) {

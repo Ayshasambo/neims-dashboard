@@ -3,10 +3,12 @@ const router = express.Router();
 const Beneficiary = require('../models/Beneficiary');
 const Station = require('../models/Station')
 const mongoose = require('mongoose');
+const {verifyToken} = require("../middlewares/authjwt.js");
+const checkPermissions = require("../middlewares/checkpermission");
 
 
 // CREATE a new beneficiary
-router.post('/', async (req, res) => {
+router.post('/',  async (req, res) => {
   const { name, individual, station, state, lga, age } = req.body;
 
   try {
@@ -38,7 +40,7 @@ router.post('/', async (req, res) => {
 
 
 // GET a single benficiary
-router.get('/:id', async (req, res) => {
+router.get('/:id',  async (req, res) => {
   try {
     const beneficiary = await Beneficiary.findById(req.params.id);
     if (!beneficiary) {
@@ -51,7 +53,7 @@ router.get('/:id', async (req, res) => {
 });
 
  //UPDATE beneficiary
- router.put('/:id', async (req, res) =>{
+ router.put('/:id',  async (req, res) =>{
     try{
       const updateBeneficiary = await Beneficiary.updateOne(
         {_id: req.params.id}, 
@@ -65,7 +67,7 @@ router.get('/:id', async (req, res) => {
   });
 
   // DELETE A beneficiary
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',   async (req, res) => {
   try {
     const deletedBeneficiary = await Beneficiary.findByIdAndDelete(req.params.id);
     if (!deletedBeneficiary) {
@@ -78,7 +80,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // GET all beneficiaries
-router.get('/', async (req, res) => {
+router.get('/',  async (req, res) => {
   try {
     const query = {};
 

@@ -1,26 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const Role = require('../models/Role.js');
+const Permission = require('../models/Permission.js');
+
 //const {verifyToken} = require("../middlewares/authjwt.js");
 
 
 // POST a new role
 router.post('/',  async (req, res) => {
   const { name, description, permissions } = req.body;
-  const role = new Role({ name, description, permissions });
+  try{
+    const populatedPermissions = await Permission.find({ _id: { $in: permissions } });
+    //const populatedPermissions = await Permission.findById(permissions);
+    const newRole = new Role({ 
+      name, 
+      description, 
+      permissions:populatedPermissions
+    });
+    const savedRole = await newRole.save();
 
-  try {
-    const newRole = await role.save();
-    res.status(201).json(newRole);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+    res.json(savedRole);
+  } catch (err) {
+    res.status(500).json({ message: 'Error creating role', error: err });
+  } 
 });
 
 // GET all roles
 router.get('/',  async (req, res) => {
   try {
-    const roles = await Role.find().sort({createdAt: -1});
+    const roles = await Role.find().populate('permissions').sort({createdAt: -1});
     res.json(roles);
   } catch (error) {
     res.status(500).json({ message: error.message });
