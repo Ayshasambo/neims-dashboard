@@ -27,7 +27,7 @@ function generateRandomPassword() {
 // CREATE A NEW USER
 router.post('/',  async (req, res) => {
   try {
-    const { firstname, surname, email, password, role, station, status } = req.body;
+    const { firstname, surname, email, role, station, status } = req.body;
     
     // Generate a random password
     const generatedPassword = generateRandomPassword();
@@ -65,7 +65,7 @@ router.post('/',  async (req, res) => {
       service: 'gmail',
       auth: {
         user: 'neimsdashboard2023@gmail.com',
-        pass: 'kfxzzyuamceuingv',
+        pass: process.env.MAIL_KEY,
       },
     });
 
