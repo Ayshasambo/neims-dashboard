@@ -16,13 +16,15 @@ const nodemailer = require('nodemailer');
          const validPassword = await bcrypt.compare(req.body.password, user.password);
          if (!validPassword) return res.status(401).json({ message: 'Invalid email or password' });
 
+          // Check the user's status
+        if (user.status !== true) {
+          return res.status(401).json({ message: 'Account is inactive' });
+        }
+
          // Set user info in session
          req.session.user = user;
 
-         // Check the user's status
-        if (user.status !== 'true') {
-          return res.status(401).json({ message: 'Account is inactive' });
-        }
+        
 
          // Generate JWT token
          const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '42h' }); 
