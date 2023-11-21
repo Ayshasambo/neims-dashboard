@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const Beneficiary = require('../models/Beneficiary');
+const Household = require('../models/Household');
 const Station = require('../models/Station')
 const mongoose = require('mongoose');
 const {verifyToken} = require("../middlewares/authjwt.js");
 const checkPermissions = require("../middlewares/checkpermission");
 
 
-// CREATE a new beneficiary
+// CREATE a new household
 router.post('/',  async (req, res) => {
-  const { name, individual, household,station, state, lga, age } = req.body;
+  const { household,station, state, lga} = req.body;
 
   try {
     // Find the populated station
@@ -20,67 +20,64 @@ router.post('/',  async (req, res) => {
     }
 
     // Create a new beneficiary
-    const newBeneficiary = await Beneficiary({
-      name,
-      individual,
+    const newHousehold= await Household({
       household,
       station:populatedStation,
       state,
       lga,
-      age,
     });
 
-    await newBeneficiary.save();
-    const populatedBeneficiary = await Beneficiary.findById(newBeneficiary._id).populate('station', 'name');
+    await newHousehold.save();
+    //const populatedBeneficiary = await Beneficiary.findById(newBeneficiary._id).populate('station', 'name');
 
-    res.json(populatedBeneficiary);
+    res.json(newHousehold);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
 
-// GET a single benficiary
+// GET a single Household
 router.get('/:id',  async (req, res) => {
   try {
-    const beneficiary = await Beneficiary.findById(req.params.id);
-    if (!beneficiary) {
-      return res.status(404).json({ message: 'Beneficiary not found' });
+    const household = await Household.findById(req.params.id);
+    if (!household) {
+      return res.status(404).json({ message: 'Household not found' });
     }
-    res.json(beneficiary);
+    res.json(household);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
- //UPDATE beneficiary
+ //UPDATE Household
  router.put('/:id',  async (req, res) =>{
     try{
-      const updateBeneficiary = await Beneficiary.updateOne(
+      const updateHousehold = await Household.updateOne(
         {_id: req.params.id}, 
         {$set: req.body}
       );
-      res.json('Beneficiary Updated')
+      res.json('Household Updated')
     }
     catch(err){ 
       res.json({message:err})
     }
   });
 
-  // DELETE A beneficiary
+  // DELETE A Household
 router.delete('/:id',   async (req, res) => {
   try {
-    const deletedBeneficiary = await Beneficiary.findByIdAndDelete(req.params.id);
-    if (!deletedBeneficiary) {
-      return res.status(404).json({ message: 'Beneficiary not found' });
+    const deletedHousehold = await Household.findByIdAndDelete(req.params.id);
+    if (!deletedHousehold) {
+      return res.status(404).json({ message: 'Household not found' });
     }
-    res.json({ message: 'Beneficiary deleted' });
+    res.json({ message: 'Household deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// GET all beneficiaries
+// GET all Household
 router.get('/',  async (req, res) => {
   try {
     const query = {};
@@ -94,8 +91,8 @@ router.get('/',  async (req, res) => {
       query['station.type'] = req.query.stationType;
     }
 
-    if (req.query.individual) {
-      query.individual = req.query.individual;
+    if (req.query.household) {
+      query.household = req.query.household;
     }
 
     if (req.query.state) {
@@ -117,30 +114,16 @@ router.get('/',  async (req, res) => {
       };
     }
 
-    const beneficiaries = await Beneficiary.find(query).sort({ createdAt: -1 });
+    const household = await Household.find(query).sort({ createdAt: -1 });
 
-    let men = 0;
-    let women = 0;
-    let children = 0;
-
-    beneficiaries.forEach((beneficiary) => {
-      if (beneficiary.individual === 'male') {
-        men += 1;
-      } else if (beneficiary.individual === 'female') {
-        women += 1;
-      } else {
-        children += 1;
-      }
+    let totalHouseholds = 0;
+    household.forEach((household) => {
+      totalHouseholds += household.household || 0;
     });
 
-    const totalBeneficiaries = men + women + children;
-
     res.json({
-      beneficiaries,
-      men,
-      women,
-      children,
-      totalBeneficiaries
+      household,
+      totalHouseholds
     });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });

@@ -150,11 +150,11 @@ router.get('/', async (req, res) => {
     const products = await Product.find(query).sort({ createdAt: -1 });
 
     // Calculate the total quantity for the specified month
-    const total = products.reduce((total, product) => {
-      return total + product.quantity;
-    }, 0);
+    // const total = products.reduce((total, product) => {
+    //   return total + product.quantity;
+    // }, 0);
 
-    res.json({products, total});
+    res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

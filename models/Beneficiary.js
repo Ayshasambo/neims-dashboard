@@ -7,6 +7,9 @@ const beneficiarySchema = new mongoose.Schema({
      individual:{
         type: String
     },
+    household:{
+        type:Number
+    },
     station:{
         id:{type:String},
         name:{type: String},
