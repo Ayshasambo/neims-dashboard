@@ -5,6 +5,7 @@ const { application } = require('express');
 const session = require('express-session')
 require('dotenv/config');
 const cors = require("cors");
+const path = require('path');
 
 //connect to database
 mongoose.connect(process.env.DB_CONNECTION)
@@ -30,6 +31,7 @@ const sivFormRoute = require('./routes/sivForm');
 const sivNumberRoute = require('./routes/sivNumber')
 const srvNumberRoute = require('./routes/srvNumber')
 const householdRoute = require('./routes/household')
+const reportRoute = require('./routes/report')
 const bincardRoute = require('./routes/bincard');
 
 
@@ -49,6 +51,9 @@ app.use('/api/sivForm', sivFormRoute);
 app.use('/api/sivNumber', sivNumberRoute);
 app.use('/api/srvNumber', srvNumberRoute);
 app.use('/api/household', householdRoute);
+app.use('/api/report', reportRoute);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use('/api/bincard', bincardRoute);
 
 
