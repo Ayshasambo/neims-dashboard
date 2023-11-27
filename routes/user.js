@@ -130,9 +130,9 @@ router.get('/',  async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const { firstname, surname, email, roleId, stationId, status } = req.body;
-    console.log('Received roleId:', roleId);
-    console.log('Received stationId:', stationId);
+    const { firstname, surname, email, role, station, status } = req.body;
+    console.log('Received roleId:', role);
+    console.log('Received stationId:', station);
 
     
     const user = await User.findById(req.params.id);
@@ -141,8 +141,8 @@ router.put('/:id', async (req, res) => {
     }
 
     // Find role and station by their IDs
-    if (roleId) {
-      const populatedRole = await Role.findById(roleId);
+    if (role) {
+      const populatedRole = await Role.findById(role);
       if (!populatedRole) {
         return res.status(400).json({ error: 'Invalid role ID' });
       }
@@ -151,8 +151,8 @@ router.put('/:id', async (req, res) => {
         name: populatedRole.name
       };
     }
-    if (stationId) {
-      const populatedStation = await Station.findById(stationId);
+    if (station) {
+      const populatedStation = await Station.findById(station);
       if (!populatedStation) {
         return res.status(400).json({ error: 'Invalid role ID' });
       }
