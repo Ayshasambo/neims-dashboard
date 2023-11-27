@@ -35,7 +35,16 @@ router.post('/',  async (req, res) => {
     // Hash the generated password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(generatedPassword, salt);
+
+    // const role = await Role.findById(roleId);
+    // if (!role) {
+    //   return res.status(400).send('Invalid Role ID');
+    // }
     
+    // const station = await Station.findById(stationId);
+    // if (!station) {
+    //   return res.status(400).send('Invalid Station ID');
+    // }
     const populatedRole = await Role.findById(role);
     const populatedStation = await Station.findById(station)
     
@@ -118,20 +127,111 @@ router.get('/',  async (req, res) => {
   }
 });
 
- //UPDATE a user
-  router.put('/:id',  async (req, res) =>{
-    try{
-      const updateUser = await User.updateOne(
-        {_id: req.params.id}, 
-        {$set: req.body}
-      );
-      res.json("User Updated")
-      
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { firstname, surname, email, roleId, stationId, status } = req.body;
+    console.log('Received roleId:', roleId);
+    console.log('Received stationId:', stationId);
+
+    
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send('User not found');
     }
-    catch(err){
-      res.status(404).json("Error updating user")
+
+    // Find role and station by their IDs
+    if (roleId) {
+      const populatedRole = await Role.findById(roleId);
+      if (!populatedRole) {
+        return res.status(400).json({ error: 'Invalid role ID' });
+      }
+      user.role = {
+        id: populatedRole._id,
+        name: populatedRole.name
+      };
     }
-  });
+    if (stationId) {
+      const populatedStation = await Station.findById(stationId);
+      if (!populatedStation) {
+        return res.status(400).json({ error: 'Invalid role ID' });
+      }
+      user.station = {
+        id: populatedStation._id,
+        name: populatedStation.name
+      };
+    }
+    // Update user properties
+    if(firstname) user.firstname = firstname;
+    if(surname) user.surname = surname;
+    if (email) user.email = email;
+    if (status !== undefined) {
+      user.status = status;
+    }
+
+    await user.save();
+    res.status(200).json({ message: 'User updated successfully', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating user');
+  }
+});
+
+// router.put('/:id', async (req, res) => {
+//   try {
+//     const { firstname, surname, email, role, station, status } = req.body;
+//     console.log('Received roleId:', role);
+//     console.log('Received stationId:', station);
+
+    
+//     const user = await User.findById(req.params.id);
+//     if (!user) {
+//       return res.status(404).send('User not found');
+//     }
+
+//      if (role) {
+//       const populatedRole = await Role.findById(role);
+//       if (!populatedRole) {
+//         return res.status(400).json({ error: 'Invalid role ID' });
+//       }
+//       user.role = {
+//         id:populatedRole._id,
+//         name: populatedRole.name
+//       };
+//     }
+//     if (station) {
+//       const populatedStation = await Station.findById(station);
+//       if (!populatedStation) {
+//         return res.status(400).json({ error: 'Invalid role ID' });
+//       }
+//       user.station = {
+//         id: populatedStation._id,
+//         name: populatedStation.name
+//       };
+//     }
+
+//     // Update user properties
+//     if (firstname)user.firstname = firstname;
+//     if (surname)user.surname = surname;
+//     if (email)user.email = email;
+//     if (status)user.status = status;
+//     // user.role = {
+//     //   id: populatedRole._id,
+//     //   name: populatedRole.name
+//     // };
+//     // user.station = {
+//     //   id: populatedStation._id,
+//     //   name: populatedStation.name
+//     // };
+
+//     await user.save();
+//     res.status(200).json({ message: 'User updated successfully', user });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Error updating user');
+//   }
+// });
+
 
 
 module.exports = router;

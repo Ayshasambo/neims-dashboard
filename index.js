@@ -32,6 +32,7 @@ const sivNumberRoute = require('./routes/sivNumber')
 const srvNumberRoute = require('./routes/srvNumber')
 const householdRoute = require('./routes/household')
 const reportRoute = require('./routes/report')
+const singleProductRoute = require('./routes/singleProduct')
 const bincardRoute = require('./routes/bincard');
 
 
@@ -52,6 +53,7 @@ app.use('/api/sivNumber', sivNumberRoute);
 app.use('/api/srvNumber', srvNumberRoute);
 app.use('/api/household', householdRoute);
 app.use('/api/report', reportRoute);
+app.use('/api/singleProduct', singleProductRoute);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/bincard', bincardRoute);

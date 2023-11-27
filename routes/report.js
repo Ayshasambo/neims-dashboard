@@ -4,6 +4,7 @@ const multer = require('multer'); // For handling file uploads
 const path = require('path');
 //const uploadsPath = path.join(__dirname, '..', 'uploads');
 const Report = require('../models/Report');
+const User = require('../models/User');
 
 // Define multer storage
 const storage = multer.diskStorage({
@@ -22,10 +23,12 @@ const storage = multer.diskStorage({
 // POST route to create a new report
 router.post('/', upload.array('images', 5), async (req, res) => {
   try {
-    const { subject, body } = req.body;
+    const { from,subject, body, to} = req.body;
     const images = req.files.map(file => file.path); // Save image paths
+    const populatedFrom = await User.findById(from);
+    const populatedTo = await User.findById(to);
 
-    const newReport = new Report({ subject, body, images });
+    const newReport = new Report({ subject, body, images, from:populatedFrom, to:populatedTo });
     await newReport.save();
 
     res.status(201).json({ message: 'Report submitted successfully' });

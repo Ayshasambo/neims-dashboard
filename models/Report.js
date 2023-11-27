@@ -1,17 +1,26 @@
 const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema({
-    subject:{ 
+    
+   from:{
+      id:{type:String},
+      firstname:{type:String},
+      surname:{type:String}
+   },
+   subject:{ 
       type: String, 
-      required: true
-    },
+   },
    body:{ 
       type: String, 
-      required: true 
     },
    images:[{ 
       type: String 
-   }] // Store image URLs here
+   }],
+   to:{
+      id:{type:String},
+      firstname:{type:String},
+      surname:{type:String}
+   }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Report', reportSchema);
