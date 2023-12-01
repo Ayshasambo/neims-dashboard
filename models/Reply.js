@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const replySchema = new mongoose.Schema({
-    // reportId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Report',
-    //     required: true
-    // },
     repliedTo: {
         id:{type:String},
         firstname:{type:String},

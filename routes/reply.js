@@ -23,7 +23,6 @@ router.post('/reports/:reportId/replies', async (req, res) => {
 
         const reply = await newReply.save();
 
-        // Update the report with the new reply
         await Report.findByIdAndUpdate(reportId, { $push: { replies: reply._id } });
 
         res.status(201).json({ message: 'Reply added successfully', reply });

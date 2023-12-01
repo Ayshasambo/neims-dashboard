@@ -37,9 +37,3 @@ const reportSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('Report', reportSchema);
-//sentTo:{
-   //type: String
-   // id:{type:String},
-   // firstname:{type:String},
-   // surname:{type:String}
-//},
