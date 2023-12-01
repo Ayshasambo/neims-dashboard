@@ -41,7 +41,8 @@ const productSchema = new mongoose.Schema({
       ref: 'User'
     },
     //id:{type:String},
-    firstname:{type: String}
+    firstname:{type: String},
+    surname:{type: String}
   },
   bincard:[{
     srvnumber: String,
@@ -67,7 +68,7 @@ productSchema.pre('save', function (next) {
       srvnumber: this.srvnumber,
       quantity: this.quantity,
       balance: this.quantity, 
-      signature: `${this.storeofficer.firstname}`,   
+      signature: `${this.storeofficer.firstname} ${this.storeofficer.surname}`,   
     };
     // Add the default bincard entry to the bincard array
     this.bincard = [defaultBincard];

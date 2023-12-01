@@ -33,6 +33,7 @@ const srvNumberRoute = require('./routes/srvNumber')
 const householdRoute = require('./routes/household')
 const reportRoute = require('./routes/report')
 const singleProductRoute = require('./routes/singleProduct')
+
 const bincardRoute = require('./routes/bincard');
 
 
