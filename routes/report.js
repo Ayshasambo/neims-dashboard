@@ -25,27 +25,47 @@ const storage = multer.diskStorage({
 router.post('/:userId', upload.array('images', 5), async (req, res) => {
   const userId = req.params.userId;
   try {
-    const {  subject, body,  station, sentTo} = req.body;
+    const { state, lga, community, natureofdisaster, dateofoccurence, datereported, dateofassessment, 
+      natureofdamge,  numberofaffectedpersons, numberofhouseholdaffected, numberofmen, numberofwomen, numberofchildren, 
+      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, assessmentteam, approved, station} = req.body;
     const images = req.files.map(file => file.path); 
     const user = await User.findById(userId);
     const populatedStation = await Station.findById(station);
-    const populatedSentTo = await User.findById(sentTo); 
+    //const populatedSentTo = await User.findById(sentTo); 
 
 
     const newReport = new Report({ 
-      subject, 
-      body, 
+      //subject, 
+      state, 
+      lga, 
+      community, 
+      natureofdisaster, 
+      dateofoccurence, 
+      datereported, 
+      dateofassessment, 
+      natureofdamge,  
+      numberofaffectedpersons, 
+      numberofhouseholdaffected, 
+      numberofmen, 
+      numberofwomen, 
+      numberofchildren, 
+      numberofhousescompletelydamaged, 
+      numberofhousespartiallydamaged, 
+      numberofinjured, 
+      numberofdeath, 
+      assessmentteam,
       images,
-      sentTo:{
-        id:populatedSentTo ._id,
-        firstname:populatedSentTo.firstname,
-        surname:populatedSentTo.surname
-      },  
-      from:{
-        id:user._id,
-        firstname:user.firstname,
-        surname:user.surname,
-      },
+      // sentTo:{
+      //   id:populatedSentTo ._id,
+      //   firstname:populatedSentTo.firstname,
+      //   surname:populatedSentTo.surname
+      // },  
+      // from:{
+      //   id:user._id,
+      //   firstname:user.firstname,
+      //   surname:user.surname,
+      // },
+      approved,
       station:{
         id:populatedStation._id, 
         name:populatedStation.name
@@ -65,16 +85,24 @@ router.get('/', async (req, res) => {
   try {
     const query = {};
 
-    if (req.query.stationName) {
-      query['station.name'] = req.query.stationName;
-    }
+    // if (req.query.stationName) {
+    //   query['station.name'] = req.query.stationName;
+    // }
 
-    if (req.query.stationType) {
-      query['station.type'] = req.query.stationType;
-    }
+    // if (req.query.stationType) {
+    //   query['station.type'] = req.query.stationType;
+    // }
 
-    if (req.query.sentTo) {
-      query.sentTo = req.query.sentTo;
+    // if (req.query.sentTo) {
+    //   query['sentTo.firstname'] = req.query.sentTo;
+    // }
+    
+    // if (req.query.sentTo) {
+    //   query['sentTo.surname'] = req.query.sentTo;
+    // }
+
+    if (req.query.approved) {
+      query.approved = req.query.approved === 'true'; 
     }
 
     const reports = await Report.find(query).sort({ createdAt: -1 });
@@ -129,73 +157,73 @@ router.delete('/:id', async (req, res) => {
 
 
 //Post Reply
-router.post('/:reportId/reply/:userId', async (req, res) => {
-  try {
-      const reportId = req.params.reportId; 
-      const { body } = req.body; 
-      const userId = req.params.userId;
-      const user = await User.findById(userId);
-      console.log('User ID:', userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
+// router.post('/:reportId/reply/:userId', async (req, res) => {
+//   try {
+//       const reportId = req.params.reportId; 
+//       const { body } = req.body; 
+//       const userId = req.params.userId;
+//       const user = await User.findById(userId);
+//       console.log('User ID:', userId);
+//       if (!user) {
+//         return res.status(404).json({ error: 'User not found' });
+//       }
       
-      const newReply = new Reply({
-          repliedTo:{
-            id:user._id,
-            firstname:user.firstname,
-            surname:user.surname
-          }, 
-          body
-      });
+//       const newReply = new Reply({
+//           repliedTo:{
+//             id:user._id,
+//             firstname:user.firstname,
+//             surname:user.surname
+//           }, 
+//           body
+//       });
 
-      const savedReply = await newReply.save();
+//       const savedReply = await newReply.save();
 
-      await Report.findByIdAndUpdate(reportId, { $push: { replies: savedReply._id } });
+//       await Report.findByIdAndUpdate(reportId, { $push: { replies: savedReply._id } });
 
-      res.json(savedReply);
-  } catch (error) {
-      res.status(500).json({ error: 'Failed to add a reply' });
-  }
-});
+//       res.json(savedReply);
+//   } catch (error) {
+//       res.status(500).json({ error: 'Failed to add a reply' });
+//   }
+// });
 
-router.get('/:reportId/replies', async (req, res) => {
-  try {
-    const reportId = req.params.reportId;
-    const replies = await Reply.find({ reportId }).populate({
-      path: 'repliedBy', 
-      select: 'firstname surname ' 
-    });
+// router.get('/:reportId/replies', async (req, res) => {
+//   try {
+//     const reportId = req.params.reportId;
+//     const replies = await Reply.find({ reportId }).populate({
+//       path: 'repliedBy', 
+//       select: 'firstname surname ' 
+//     });
 
-    res.status(200).json({ replies });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch replies' });
-  }
-});
+//     res.status(200).json({ replies });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to fetch replies' });
+//   }
+// });
 
-// POST a forward for a report
-router.post('/:reportId/forwardTo/:userId', async (req, res) => {
-  try {
-    const reportId = req.params.reportId;
-    const userId = req.params.userId;
+// // POST a forward for a report
+// router.post('/:reportId/forwardTo/:userId', async (req, res) => {
+//   try {
+//     const reportId = req.params.reportId;
+//     const userId = req.params.userId;
 
-    const report = await Report.findById(reportId);
-    if (!report) {
-      return res.status(404).json({ error: 'Report not found' });
-    }
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+//     const report = await Report.findById(reportId);
+//     if (!report) {
+//       return res.status(404).json({ error: 'Report not found' });
+//     }
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
 
-    report.forwardTo.push(userId);
-    await report.save();
+//     report.forwardTo.push(userId);
+//     await report.save();
 
-    res.status(200).json({ message: 'Report forwarded successfully' , report});
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to forward report' });
-  }
-});
+//     res.status(200).json({ message: 'Report forwarded successfully' , report});
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to forward report' });
+//   }
+// });
 
 
 

@@ -36,15 +36,6 @@ router.post('/',  async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(generatedPassword, salt);
 
-    // const role = await Role.findById(roleId);
-    // if (!role) {
-    //   return res.status(400).send('Invalid Role ID');
-    // }
-    
-    // const station = await Station.findById(stationId);
-    // if (!station) {
-    //   return res.status(400).send('Invalid Station ID');
-    // }
     const populatedRole = await Role.findById(role);
     const populatedStation = await Station.findById(station)
     
