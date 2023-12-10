@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 
 // POST a report
-router.post('/:userId', upload.array('images', 5), async (req, res) => {
+router.post('/', upload.array('images', 5), async (req, res) => {
   const userId = req.params.userId;
   try {
     const { state, lga, community, natureofdisaster, dateofoccurence, datereported, dateofassessment, 
