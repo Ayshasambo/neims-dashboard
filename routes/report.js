@@ -27,7 +27,7 @@ router.post('/', upload.array('images', 5), async (req, res) => {
   try {
     const { state, lga, community, natureofdisaster, dateofoccurence, datereported, dateofassessment, 
       natureofdamge,  numberofaffectedpersons, numberofhouseholdaffected, numberofmen, numberofwomen, numberofchildren, 
-      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, assessmentteam, approved, station} = req.body;
+      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, assessmentteam, approved, coordinates, longitude, latitude, station} = req.body;
     const images = req.files.map(file => file.path); 
     const user = await User.findById(userId);
     const populatedStation = await Station.findById(station);
@@ -66,6 +66,9 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       //   surname:user.surname,
       // },
       approved,
+      coordinates,
+      longitude,
+      latitude,
       station:{
         id:populatedStation._id, 
         name:populatedStation.name

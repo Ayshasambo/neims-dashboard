@@ -88,6 +88,12 @@ const reportSchema = new mongoose.Schema({
   assessmentteam:[String],
   coordinates:{
    type:String
+  },
+  longitude:{
+   type: String
+  },
+  latitude:{
+   type:String
   }
 
 }, { timestamps: true });
