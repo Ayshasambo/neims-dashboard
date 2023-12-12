@@ -77,21 +77,20 @@ const reportSchema = new mongoose.Schema({
       type: Boolean,
       default:false
    },
-   // replies:[{
-   //    type: mongoose.Schema.Types.ObjectId,
-   //    ref: 'Reply'
-   // }],
+// replies:[{
+//    type: mongoose.Schema.Types.ObjectId,
+//    ref: 'Reply'
+// }],
 //    forwardTo: [{
 //       type: mongoose.Schema.Types.ObjectId,
 //       ref: 'User' 
 //   }],
   assessmentteam:[String],
-  coordinates:{
-   type:String
-  },
+
   longitude:{
    type: String
   },
+
   latitude:{
    type:String
   }

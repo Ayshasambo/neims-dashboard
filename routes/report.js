@@ -66,7 +66,6 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       //   surname:user.surname,
       // },
       approved,
-      coordinates,
       longitude,
       latitude,
       station:{
