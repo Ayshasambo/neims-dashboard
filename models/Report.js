@@ -61,9 +61,9 @@ const reportSchema = new mongoose.Schema({
    numberofdeath:{
       type:Number
    },
-   images:[{ 
-      type: String 
-   }],
+   // images:[{ 
+   //    type: String 
+   // }],
    station:{
       id:{type:String},
       name:{type:String}
@@ -85,7 +85,7 @@ const reportSchema = new mongoose.Schema({
 //       type: mongoose.Schema.Types.ObjectId,
 //       ref: 'User' 
 //   }],
-  assessmentteam:[String],
+ // assessmentteam:[String],
 
   longitude:{
    type: String

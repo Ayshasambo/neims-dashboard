@@ -8,34 +8,31 @@ const User = require('../models/User');
 const Reply = require('../models/Reply');
 
 // Define multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/'); 
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)); 
-    }
-  });
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, 'uploads/'); 
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)); 
+//     }
+//   });
   
-  // Create multer instance
-  const upload = multer({ storage: storage });
+//   // Create multer instance
+//   const upload = multer({ storage: storage });
 
 
 // POST a report
-router.post('/', upload.array('images', 5), async (req, res) => {
-  const userId = req.params.userId;
+router.post('/',  async (req, res) => {
   try {
     const { state, lga, community, natureofdisaster, dateofoccurence, datereported, dateofassessment, 
       natureofdamge,  numberofaffectedpersons, numberofhouseholdaffected, numberofmen, numberofwomen, numberofchildren, 
-      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, assessmentteam, approved, coordinates, longitude, latitude, station} = req.body;
-    const images = req.files.map(file => file.path); 
-    const user = await User.findById(userId);
+      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, assessmentteam, approved, longitude, latitude, station} = req.body;
+    //const images = req.files.map(file => file.path); 
     const populatedStation = await Station.findById(station);
     //const populatedSentTo = await User.findById(sentTo); 
 
 
     const newReport = new Report({ 
-      //subject, 
       state, 
       lga, 
       community, 
@@ -53,8 +50,8 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       numberofhousespartiallydamaged, 
       numberofinjured, 
       numberofdeath, 
-      assessmentteam,
-      images,
+      //assessmentteam,
+      //images,
       // sentTo:{
       //   id:populatedSentTo ._id,
       //   firstname:populatedSentTo.firstname,
@@ -74,8 +71,8 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       } 
     });
     await newReport.save();
-
-    res.status(201).json({ message: 'Report submitted successfully', newReport});
+    
+    res.status(201).json(newReport);
   } catch (error) {
     res.status(500).json({ message: 'Error submitting report', error: error.message });
   }
