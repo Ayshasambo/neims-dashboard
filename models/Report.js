@@ -23,13 +23,10 @@ const reportSchema = new mongoose.Schema({
       type: String, 
    },
    dateofoccurence:{
-      type:Date
+      type:String
    },
    datereported:{
-      type: Date
-   },
-   dateofassessment:{
-      type:Date
+      type: String
    },
    natureofdamage:{
       type:String

@@ -10,7 +10,7 @@ const mongoose = require('mongoose')
 
 // create the products
 router.post('/', async (req, res) => {
-  const { name, quantity, station, srvnumber,  category, tag, bincard, storeofficer} = req.body;
+  const { name, quantity, station, srvnumber,  category, tag,expiryDate, bincard, storeofficer} = req.body;
   try {
     const populatedCategory = await Category.findById(category);
     const populatedStation = await Station.findById(station);
@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
         name: populatedCategory.name
       },
       tag,
+      expiryDate,
       //storeofficer: populatedStoreofficer,
       storeofficer:{
         id:populatedStoreofficer._id,

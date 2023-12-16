@@ -35,6 +35,9 @@ const productSchema = new mongoose.Schema({
   tag:{
     type: String,
   },
+  expiryDate:{
+     type:String
+  },
   storeofficer:{
     id: {
       type: mongoose.Schema.Types.ObjectId,
