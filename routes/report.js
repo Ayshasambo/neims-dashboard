@@ -83,13 +83,13 @@ router.get('/', async (req, res) => {
   try {
     const query = {};
 
-    // if (req.query.stationName) {
-    //   query['station.name'] = req.query.stationName;
-    // }
+    if (req.query.stationName) {
+      query['station.name'] = req.query.stationName;
+    }
 
-    // if (req.query.stationType) {
-    //   query['station.type'] = req.query.stationType;
-    // }
+    if (req.query.stationType) {
+      query['station.type'] = req.query.stationType;
+    }
 
     // if (req.query.sentTo) {
     //   query['sentTo.firstname'] = req.query.sentTo;
