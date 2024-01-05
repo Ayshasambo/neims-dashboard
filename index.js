@@ -33,6 +33,7 @@ const srvNumberRoute = require('./routes/srvNumber')
 const householdRoute = require('./routes/household')
 const reportRoute = require('./routes/report')
 const singleProductRoute = require('./routes/singleProduct')
+const transactionRoute = require('./routes/transaction')
 
 const bincardRoute = require('./routes/bincard');
 
@@ -55,6 +56,7 @@ app.use('/api/srvNumber', srvNumberRoute);
 app.use('/api/household', householdRoute);
 app.use('/api/report', reportRoute);
 app.use('/api/singleProduct', singleProductRoute);
+app.use('/api/transaction', transactionRoute);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/bincard', bincardRoute);

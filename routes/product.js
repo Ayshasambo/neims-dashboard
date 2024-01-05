@@ -35,7 +35,8 @@ router.post('/', async (req, res) => {
       //storeofficer: populatedStoreofficer,
       storeofficer:{
         id:populatedStoreofficer._id,
-        firstname:populatedStoreofficer.firstname
+        firstname:populatedStoreofficer.firstname,
+        surname:populatedStoreofficer.surname
       },
       bincard,
     });
