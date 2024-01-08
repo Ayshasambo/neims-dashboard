@@ -24,18 +24,35 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Delete a transaction
+// DELETE a report
 router.delete('/:id', async (req, res) => {
   try {
-    const transaction = await Transaction.findById(req.params.id);
-    if (!transaction) {
-      return res.status(404).json({ error: 'Transaction not found' });
+    const deletedTransaction = await Transaction.findByIdAndDelete(req.params.id);
+    if (!deletedTransaction) {
+      return res.status(404).json({ message: 'Transaction not found' });
     }
-    await transaction.remove();
     res.json({ message: 'Transaction deleted' });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ message: error.message });
   }
 });
+
+
+
+
+
+// Delete a transaction
+// router.delete('/:id', async (req, res) => {
+//   try {
+//     const transaction = await Transaction.findById(req.params.id);
+//     if (!transaction) {
+//       return res.status(404).json({ error: 'Transaction not found' });
+//     }
+//     await transaction.remove();
+//     res.json({ message: 'Transaction deleted' });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// });
 
 module.exports = router;
