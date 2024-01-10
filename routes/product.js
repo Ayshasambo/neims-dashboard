@@ -33,11 +33,11 @@ router.post('/', async (req, res) => {
       tag,
       expiryDate,
       //storeofficer: populatedStoreofficer,
-      // storeofficer:{
-      //   id:populatedStoreofficer._id,
-      //   firstname:populatedStoreofficer.firstname,
-      //   surname:populatedStoreofficer.surname
-      // },
+      storeofficer:{
+        id:populatedStoreofficer._id,
+        firstname:populatedStoreofficer.firstname,
+        surname:populatedStoreofficer.surname
+      },
       bincard,
     });
 
