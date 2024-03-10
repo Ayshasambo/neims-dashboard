@@ -27,7 +27,7 @@ const nodemailer = require('nodemailer');
         
 
          // Generate JWT token
-         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '42h' }); 
+         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET); 
 
         res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
