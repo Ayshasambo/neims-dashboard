@@ -43,7 +43,7 @@ router.post('/forgot-password', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const resetToken = jwt.sign({ _id: user._id }, process.env.RESET_SECRET, { expiresIn: '1h' });
+    const resetToken = jwt.sign({ _id: user._id }, process.env.RESET_SECRET);
     
     // Configure nodemailer to send an email containing the resetToken to the user's email address
     const transporter = nodemailer.createTransport({
