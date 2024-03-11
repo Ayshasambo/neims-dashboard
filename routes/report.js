@@ -49,7 +49,7 @@ router.post('/',  async (req, res) => {
       numberofhousespartiallydamaged, 
       numberofinjured, 
       numberofdeath,
-      numberofidps
+      numberofidps,
       //assessmentteam,
       //images,
       // sentTo:{
