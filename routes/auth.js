@@ -24,8 +24,6 @@ const nodemailer = require('nodemailer');
          // Set user info in session
          req.session.user = user;
 
-        
-
          // Generate JWT token
          const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET); 
 
