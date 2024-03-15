@@ -149,6 +149,14 @@ router.get('/', async (req, res) => {
       query['category.name'] = req.query.category;
     }
 
+    if (req.query.categoryTotal) {
+      query['category.total'] = req.query.categoryTotal;
+    }
+
+    if (req.query.categoryBreakdown) {
+      query['category.categorybreakdown'] = req.query.categoryBreakdown;
+    }
+
     // Check if 'station' query parameter is provided
     if (req.query.stationName) {
       query['station.name'] = req.query.stationName;
