@@ -26,7 +26,7 @@ router.post('/',  async (req, res) => {
   try {
     const { state, lga, community, natureofdisaster, dateofoccurence, datereported,  
       natureofdamage,  numberofaffectedpersons, numberofhouseholdaffected, numberofmen, numberofwomen, numberofchildren, 
-      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, 
+      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, numberofidps,
        approved, longitude, latitude, station, remark, numberofpersonswithdisability, 
        hectaresoffarmlandaffected, children0to2years, children2to5years, children5to12years} = req.body;
     //const images = req.files.map(file => file.path); 
@@ -51,6 +51,7 @@ router.post('/',  async (req, res) => {
       numberofhousespartiallydamaged, 
       numberofinjured, 
       numberofdeath,
+      numberofidps,
       numberofpersonswithdisability, 
       hectaresoffarmlandaffected, 
       children0to2years, 

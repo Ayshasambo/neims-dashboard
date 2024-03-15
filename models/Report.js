@@ -58,6 +58,9 @@ const reportSchema = new mongoose.Schema({
    numberofdeath:{
       type:Number
    },
+   numberofidps:{
+      type:Number
+   },
    numberofpersonswithdisability:{
       type:Number
    },
