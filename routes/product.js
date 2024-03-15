@@ -143,7 +143,7 @@ router.put('/:id', async (req, res) =>{
 router.get('/', async (req, res) => {
   try {
     const query = {};
-    
+    let products;
     // Check if 'category' query parameter is provided
     if (req.query.category) {
       query['category.name'] = req.query.category;
@@ -169,7 +169,7 @@ router.get('/', async (req, res) => {
       };
     }
 
-    let products;
+    
 
     if (req.query.categoryTotal) {
       const category = await Category.findOne({ name: req.query.category });
