@@ -33,7 +33,11 @@ const productSchema = new mongoose.Schema({
     },
     total:{
       type:Number
+    },
+    categorybreakdown:{
+      type:Object
     }
+
   },
   tag:{
     type: String,

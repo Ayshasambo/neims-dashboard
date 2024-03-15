@@ -43,9 +43,6 @@ const reportSchema = new mongoose.Schema({
    numberofwomen:{
       type:Number
    },
-   numberofchildren:{
-      type:Number
-   },
    numberofhousescompletelydamaged:{
       type:Number
    },
@@ -61,12 +58,30 @@ const reportSchema = new mongoose.Schema({
    numberofidps:{
       type:Number
    },
+   children0to2years:{
+      type:Number
+   },
+   children2to5years:{
+      type:Number
+   },
+   children5to12years:{
+      type:Number
+   },
+   numberofpersonswithdisabilities:{
+      type:Number
+   },
+   hectaresoffarmlandaffected:{
+      type:Number
+   },
    // images:[{ 
    //    type: String 
    // }],
    station:{
       id:{type:String},
       name:{type:String}
+   },
+   remarks:{
+      type:String
    },
    approved:{
       type: Boolean,
@@ -78,7 +93,7 @@ const reportSchema = new mongoose.Schema({
   latitude:{
    type:String
   },
-  reporttakenby:{
+  assessmentofficer:{
    type:String
   }
 

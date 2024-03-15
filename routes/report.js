@@ -25,8 +25,10 @@ const Reply = require('../models/Reply');
 router.post('/',  async (req, res) => {
   try {
     const { state, lga, community, natureofdisaster, dateofoccurence, datereported,  
-      natureofdamage,  numberofaffectedpersons, numberofhouseholdaffected, numberofmen, numberofwomen, numberofchildren, 
-      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, approved, longitude, latitude, station} = req.body;
+      natureofdamage,  numberofaffectedpersons, numberofhouseholdaffected, numberofmen, numberofwomen, 
+      numberofhousescompletelydamaged, numberofhousespartiallydamaged, numberofinjured, numberofdeath, numberofidps, 
+      numberofpersonswithdisabilities, children0to2years, children2to5years, hectaresoffarmlandaffected,
+      children5to12years, remarks, assessmentofficer, approved, longitude, latitude, station} = req.body;
     //const images = req.files.map(file => file.path); 
     const populatedStation = await Station.findById(station);
     //const populatedSentTo = await User.findById(sentTo); 
@@ -44,7 +46,6 @@ router.post('/',  async (req, res) => {
       numberofhouseholdaffected, 
       numberofmen, 
       numberofwomen, 
-      numberofchildren, 
       numberofhousescompletelydamaged, 
       numberofhousespartiallydamaged, 
       numberofinjured, 
@@ -53,6 +54,13 @@ router.post('/',  async (req, res) => {
       longitude, 
       latitude,
       numberofidps,
+      numberofpersonswithdisabilities, 
+      children0to2years, 
+      children2to5years, 
+      children5to12years,
+      hectaresoffarmlandaffected,
+      remarks,
+      assessmentofficer,
       station: {
         id: populatedStation._id,
         name: populatedStation.name,
