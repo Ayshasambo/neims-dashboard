@@ -58,24 +58,9 @@ const reportSchema = new mongoose.Schema({
    numberofdeath:{
       type:Number
    },
-   numberofidps:{
-      type:Number
-   },
-   numberofpersonswithdisability:{
-      type:Number
-   },
-   hectaresoffarmlandaffected:{
-      type:Number
-   },
-   children0to2years:{
-      type:Number
-   },
-   children2to5years:{
-      type:Number
-   },
-   children5to12years:{
-      tyoe:Number
-   },
+   // images:[{ 
+   //    type: String 
+   // }],
    station:{
       id:{type:String},
       name:{type:String}
