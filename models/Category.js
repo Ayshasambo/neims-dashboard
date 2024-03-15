@@ -6,6 +6,14 @@ const categorySchema = new mongoose.Schema({
     },
     color: {
         type: String 
+    },
+    total:{
+        type: Number,
+        default:0
+    },
+    categorybreakdown:{
+        type: Object,
+        default:{}
     }
 },
 {timestamps:true}

@@ -58,37 +58,36 @@ const reportSchema = new mongoose.Schema({
    numberofdeath:{
       type:Number
    },
-   // images:[{ 
-   //    type: String 
-   // }],
+   numberofpersonswithdisability:{
+      type:Number
+   },
+   hectaresoffarmlandaffected:{
+      type:Number
+   },
+   children0to2years:{
+      type:Number
+   },
+   children2to5years:{
+      type:Number
+   },
+   children5to12years:{
+      tyoe:Number
+   },
    station:{
       id:{type:String},
       name:{type:String}
    },
-   // sentTo:{
-   //    id:{type:String},
-   //    firstname:{type:String},
-   //    surname:{type:String}
-   // },
    approved:{
       type: Boolean,
       default:false
    },
-// replies:[{
-//    type: mongoose.Schema.Types.ObjectId,
-//    ref: 'Reply'
-// }],
-//    forwardTo: [{
-//       type: mongoose.Schema.Types.ObjectId,
-//       ref: 'User' 
-//   }],
- // assessmentteam:[String],
-
   longitude:{
    type: String
   },
-
   latitude:{
+   type:String
+  },
+  reporttakenby:{
    type:String
   }
 

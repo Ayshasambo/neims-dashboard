@@ -28,16 +28,18 @@ router.post('/', async (req, res) => {
       },
       category: {
         id: populatedCategory._id,
-        name: populatedCategory.name
+        name: populatedCategory.name,
+        total: populatedCategory.total,
+        categorybreakdown: populatedCategory.categorybreakdown
       },
       tag,
       expiryDate,
       //storeofficer: populatedStoreofficer,
-      storeofficer:{
-        id:populatedStoreofficer._id,
-        firstname:populatedStoreofficer.firstname,
-        surname:populatedStoreofficer.surname
-      },
+      // storeofficer:{
+      //   id:populatedStoreofficer._id,
+      //   firstname:populatedStoreofficer.firstname,
+      //   surname:populatedStoreofficer.surname
+      // },
       bincard,
     });
 
@@ -66,6 +68,24 @@ router.post('/', async (req, res) => {
      }
     // Save the updated station
     await populatedStation.save();
+
+    // Update global category total quantity
+    const categoryProducts = await Product.find({ 'category.id': category });
+    const categoryTotalQuantity = categoryProducts.reduce((total, product) => {
+      return total + product.quantity;
+    }, 0);
+    populatedCategory.total = categoryTotalQuantity;
+
+    // Breakdown of items under each category
+      const productBreakdown = categoryProducts.reduce((breakdown, product) => {
+       breakdown[product.name] = (breakdown[product.name] || 0) + product.quantity;
+       return breakdown;
+    }, {});
+    
+    // Save the product breakdown in the category model
+    populatedCategory.categorybreakdown = productBreakdown;
+    await populatedCategory.save();
+
 
     res.json({ product: newProduct});
   } catch (error) {
@@ -123,7 +143,7 @@ router.put('/:id', async (req, res) =>{
 router.get('/', async (req, res) => {
   try {
     const query = {};
-
+    
     // Check if 'category' query parameter is provided
     if (req.query.category) {
       query['category.name'] = req.query.category;
@@ -149,12 +169,36 @@ router.get('/', async (req, res) => {
       };
     }
 
-    const products = await Product.find(query).sort({ createdAt: -1 });
+    let products;
 
-    // Calculate the total quantity for the specified month
-    // const total = products.reduce((total, product) => {
-    //   return total + product.quantity;
-    // }, 0);
+    if (req.query.categoryTotal) {
+      const category = await Category.findOne({ name: req.query.category });
+      if (category) {
+        const categoryTotal = category.total;
+        res.json({ categoryTotal });
+        return;
+      } else {
+        res.status(404).json({ message: 'Category not found' });
+        return;
+      }
+    } 
+    if (req.query.categoryBreakdown) {
+      const category = await Category.findOne({ name: req.query.category });
+      if (category) {
+        products = await Product.find({ 'category.name': req.query.category });
+        const productBreakdown = products.reduce((breakdown, product) => {
+          breakdown[product.name] = (breakdown[product.name] || 0) + product.quantity;
+          return breakdown;
+        }, {});
+        res.json({ categoryBreakdown: productBreakdown });
+        return;
+      } else {
+        res.status(404).json({ message: 'Category not found' });
+        return;
+      }
+    }
+
+    products = await Product.find(query).sort({ createdAt: -1 });
 
     res.json(products);
   } catch (error) {

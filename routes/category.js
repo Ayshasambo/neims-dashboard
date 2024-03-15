@@ -9,8 +9,8 @@ const checkPermissions = require("../middlewares/checkpermission");
 // CREATE a new category
 router.post('/',  async (req, res) => {
     try {
-      const {name, color,} = req.body;
-      const category = new Category({ name, color });
+      const {name, color, total, categorybreakdown} = req.body;
+      const category = new Category({ name, color, total, categorybreakdown});
     
       const newCategory = await category.save();
       res.status(201).json(newCategory);

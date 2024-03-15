@@ -30,6 +30,9 @@ const productSchema = new mongoose.Schema({
     },
     name: {
       type: String
+    },
+    total:{
+      type:Number
     }
   },
   tag:{
@@ -55,15 +58,15 @@ const productSchema = new mongoose.Schema({
     },
     quantity: Number,
     balance: Number,
-    signature: {  // Include the signature field
-      type: String, // Modify the type based on the signature details you're capturing
+    signature: {  
+      type: String, 
     },
   }],
 },
 {timestamps:true}
 );
 
-// Define pre-save middleware
+//pre-save middleware
 productSchema.pre('save', function (next) {
   if (!this.bincard || this.bincard.length === 0) {
     
