@@ -138,13 +138,11 @@ router.put('/:id', async (req, res) =>{
   }
 });
 
-
 // GET all products
 router.get('/', async (req, res) => {
   try {
     const query = {};
-    //let products;
-    // Check if 'category' query parameter is provided
+   
     if (req.query.category) {
       query['category.name'] = req.query.category;
     }
@@ -153,11 +151,10 @@ router.get('/', async (req, res) => {
       query['category.total'] = req.query.categoryTotal;
     }
 
-    if (req.query.categoryBreakdown) {
-      query['category.categorybreakdown'] = req.query.categoryBreakdown;
+    if (req.query.categoryBreak) {
+      query['category.categorybreakdown'] = req.query.categoryBreak;
     }
 
-    // Check if 'station' query parameter is provided
     if (req.query.stationName) {
       query['station.name'] = req.query.stationName;
     }
@@ -177,36 +174,29 @@ router.get('/', async (req, res) => {
       };
     }
 
-    
-
     // if (req.query.categoryTotal) {
     //   const category = await Category.findOne({ name: req.query.category });
     //   if (category) {
     //     const categoryTotal = category.total;
-    //     res.json({ categoryTotal });
+    //     res.json(categoryTotal);
     //     return;
     //   } else {
     //     res.status(404).json({ message: 'Category not found' });
     //     return;
     //   }
     // } 
+
     // if (req.query.categoryBreakdown) {
     //   const category = await Category.findOne({ name: req.query.category });
     //   if (category) {
-    //     products = await Product.find({ 'category.name': req.query.category });
-    //     const productBreakdown = products.reduce((breakdown, product) => {
-    //       breakdown[product.name] = (breakdown[product.name] || 0) + product.quantity;
-    //       return breakdown;
-    //     }, {});
-    //     res.json({ categoryBreakdown: productBreakdown });
-    //     return;
+    //     const categoryBreakdown = category.categorybreakdown;
+    //     res.json({ categoryBreakdown });
     //   } else {
     //     res.status(404).json({ message: 'Category not found' });
-    //     return;
     //   }
+    //   return;
     // }
-
-    const products = await Product.find(query).sort({ createdAt: -1 });
+     const products = await Product.find(query).sort({ createdAt: -1 });
 
     res.json(products);
   } catch (error) {

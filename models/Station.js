@@ -32,19 +32,15 @@ const stationSchema = new mongoose.Schema({
           default: Date.now
         }
        }],
-
        areaofcoverage:[{
          type: String
        }],
-
        mobile:{
         type: Number
        },
-
        location:{
         type:String
        },
-
        head:{
         type: String
        },
