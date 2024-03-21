@@ -29,8 +29,6 @@ router.post('/', async (req, res) => {
       category: {
         id: populatedCategory._id,
         name: populatedCategory.name,
-        total: populatedCategory.total,
-        categorybreakdown: populatedCategory.categorybreakdown
       },
       tag,
       expiryDate,
@@ -138,23 +136,12 @@ router.put('/:id', async (req, res) =>{
   }
 });
 
-// GET all products
+
+
 router.get('/', async (req, res) => {
   try {
     const query = {};
    
-    if (req.query.category) {
-      query['category.name'] = req.query.category;
-    }
-
-    if (req.query.categoryTotal) {
-      query['category.total'] = req.query.categoryTotal;
-    }
-
-    if (req.query.categoryBreak) {
-      query['category.categorybreakdown'] = req.query.categoryBreak;
-    }
-
     if (req.query.stationName) {
       query['station.name'] = req.query.stationName;
     }
@@ -174,39 +161,59 @@ router.get('/', async (req, res) => {
       };
     }
 
-    // if (req.query.categoryTotal) {
-    //   const category = await Category.findOne({ name: req.query.category });
-    //   if (category) {
-    //     const categoryTotal = category.total;
-    //     res.json(categoryTotal);
-    //     return;
-    //   } else {
-    //     res.status(404).json({ message: 'Category not found' });
-    //     return;
-    //   }
-    // } 
+    if (req.query.category) {
+      query['category.name'] = req.query.category;
+    }
 
-    // if (req.query.categoryBreakdown) {
-    //   const category = await Category.findOne({ name: req.query.category });
-    //   if (category) {
-    //     const categoryBreakdown = category.categorybreakdown;
-    //     res.json({ categoryBreakdown });
-    //   } else {
-    //     res.status(404).json({ message: 'Category not found' });
-    //   }
-    //   return;
-    // }
-     const products = await Product.find(query).sort({ createdAt: -1 });
+    if (req.query.filter === 'category') {
+      const products = await Product.find(query);
+      const categories = await Category.find({});
+      
+      const categoryData = categories.map(async (category) => {
+        const categoryProducts = products.filter(product => product.category.name === category.name);
+        
+        const { total, breakdown } = categoryProducts.reduce((acc, product) => {
+          acc.total += product.quantity;
+          acc.breakdown[product.name] = (acc.breakdown[product.name] || 0) + product.quantity;
+          return acc;
+        }, { total: 0, breakdown: {} });
 
-    res.json(products);
+        return { id: category._id, name: category.name, total, breakdown };
+      });
+
+      const resolvedCategoryData = await Promise.all(categoryData);
+      res.json(resolvedCategoryData);
+    } else {
+      const products = await Product.find(query).sort({ createdAt: -1 });
+      res.json(products);
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+
 module.exports = router
 
 
 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
